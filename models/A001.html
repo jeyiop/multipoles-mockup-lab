@@ -2,39 +2,38 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>PLV 4 Étagères - Modèle A001</title>
+    <title>PLV 3D Studio - Validation</title>
     <style>
-        body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .stand {
-            width: 250px; height: 450px;
-            background: #fff;
-            border: 2px solid #333;
-            position: relative;
-            transform: perspective(1000px) rotateY(-15deg);
-            box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
+        :root { --accent: #0055ff; }
+        body { font-family: -apple-system, sans-serif; background: #e5e5e5; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        .stage { 
+            width: 400px; height: 500px; background: #fff; border: 1px solid #ccc;
+            perspective: 1000px; display: flex; justify-content: center; align-items: center;
+            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .plv {
+            width: 200px; height: 350px; background: #f0f0f0; border: 2px solid #333;
+            transform: rotateY(-20deg) rotateX(5deg);
             display: flex; flex-direction: column; align-items: center;
-            padding-top: 50px;
+            position: relative;
         }
-        /* Fronton */
-        .header { width: 90%; height: 60px; background: #222; margin-bottom: 20px; border-radius: 4px; }
-        /* 4 Étagères trapézoïdales */
-        .shelf {
-            width: 85%; height: 10px; background: #444; margin: 25px 0;
-            transform: rotateX(20deg); box-shadow: 0 5px 0 #222;
-        }
-        .controls { position: absolute; bottom: 20px; left: 20px; }
+        .header { width: 100%; height: 50px; background: #333; }
+        .shelf { width: 90%; height: 8px; background: #666; margin: 25px 0; transform: rotateX(-10deg); }
+        .controls { margin-top: 30px; }
     </style>
 </head>
 <body>
-    <div class="stand">
-        <div class="header"></div>
-        <div class="shelf"></div>
-        <div class="shelf"></div>
-        <div class="shelf"></div>
-        <div class="shelf"></div>
+    <div class="stage">
+        <div class="plv">
+            <div class="header"></div>
+            <div class="shelf"></div>
+            <div class="shelf"></div>
+            <div class="shelf"></div>
+            <div class="shelf"></div>
+        </div>
     </div>
     <div class="controls">
-        <button onclick="alert('Modèle A001 validé')">VALIDER</button>
+        <button onclick="alert('Modèle enregistré')">AJOUTER BANQUE IMAGE</button>
     </div>
 </body>
 </html>
