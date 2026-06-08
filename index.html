@@ -3,41 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mockup PLV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Validation Modèle PLV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --color-bg: #ffffff; --color-text: #171717; --color-border: rgba(0, 0, 0, 0.08); }
-        body { font-family: 'Geist', sans-serif; color: var(--color-text); margin: 0; padding: 40px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { padding-bottom: 20px; border-bottom: 1px solid var(--color-border); margin-bottom: 40px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .card { padding: 24px; border: 1px solid var(--color-border); border-radius: 8px; }
-        .plv-preview { height: 300px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: 600; margin-bottom: 16px; }
+        body { font-family: 'Geist', sans-serif; margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center; background: #fff; color: #171717; }
+        .viewer { width: 100%; max-width: 600px; height: 400px; background: #f0f0f0; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #666; margin-bottom: 24px; }
+        .controls { display: flex; gap: 12px; }
+        button { padding: 12px 24px; font-size: 14px; border-radius: 6px; cursor: pointer; border: 1px solid #171717; }
+        .btn-val { background: #171717; color: #fff; }
+        .btn-sec { background: #fff; color: #171717; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Configuration PLV</h1>
-        </header>
-        <div class="grid">
-            <div class="card">
-                <div class="plv-preview">PROTOTYPE PLV 3D</div>
-                <h3>Détails du modèle</h3>
-                <p>Structure : Carton renforcé / Polypropylène</p>
-                <p>Format : Stand Présentoir 180cm</p>
-            </div>
-            <div class="card">
-                <h3>Options de personnalisation</h3>
-                <ul>
-                    <li>Finition : Mat / Brillant</li>
-                    <li>Impression : Quadri Recto/Verso</li>
-                    <li>Accessoires : Crochets renforcés</li>
-                    <li>Quantité : 50 unités</li>
-                </ul>
-                <button style="margin-top:20px; padding: 10px 20px; background: #000; color: #fff; border:none; border-radius: 4px; cursor: pointer;">Valider la configuration</button>
-            </div>
-        </div>
+    <div class="viewer" id="modelViewer">CHARGEMENT MODÈLE 3D...</div>
+    <div class="controls">
+        <button class="btn-val" onclick="saveToBank()">VALIDER ET ENVOYER EN BANQUE</button>
+        <button class="btn-sec" onclick="window.location.reload()">RECHARGER</button>
     </div>
+    <script>
+        // Simulation de préchargement
+        setTimeout(() => {
+            document.getElementById('modelViewer').innerText = "MODÈLE PLV 3D CHARGÉ";
+        }, 1500);
+
+        function saveToBank() {
+            alert("Modèle validé et archivé dans la banque image.");
+        }
+    </script>
 </body>
 </html>
