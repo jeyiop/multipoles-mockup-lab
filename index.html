@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation Modèle PLV</title>
+    <title>Validation Modèle PLV 4 Étagères</title>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Geist', sans-serif; margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center; background: #fff; color: #171717; }
-        .viewer { width: 100%; max-width: 600px; height: 400px; background: #f0f0f0; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #666; margin-bottom: 24px; }
+        .viewer { width: 100%; max-width: 600px; height: 400px; background: #f0f0f0; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px; }
+        .shelf { width: 70%; height: 10px; background: #bbb; margin: 5px 0; border-radius: 2px; }
         .controls { display: flex; gap: 12px; }
         button { padding: 12px 24px; font-size: 14px; border-radius: 6px; cursor: pointer; border: 1px solid #171717; }
         .btn-val { background: #171717; color: #fff; }
@@ -15,19 +16,21 @@
     </style>
 </head>
 <body>
-    <div class="viewer" id="modelViewer">CHARGEMENT MODÈLE 3D...</div>
+    <h1>Modèle PLV : 4 Étagères</h1>
+    <div class="viewer" id="modelViewer">
+        <div class="shelf"></div>
+        <div class="shelf"></div>
+        <div class="shelf"></div>
+        <div class="shelf"></div>
+        <p style="color:#666; margin-top:20px;">MODÈLE 4 ÉTAGÈRES CHARGÉ</p>
+    </div>
     <div class="controls">
         <button class="btn-val" onclick="saveToBank()">VALIDER ET ENVOYER EN BANQUE</button>
         <button class="btn-sec" onclick="window.location.reload()">RECHARGER</button>
     </div>
     <script>
-        // Simulation de préchargement
-        setTimeout(() => {
-            document.getElementById('modelViewer').innerText = "MODÈLE PLV 3D CHARGÉ";
-        }, 1500);
-
         function saveToBank() {
-            alert("Modèle validé et archivé dans la banque image.");
+            alert("Modèle 4 étagères validé et archivé dans la banque image.");
         }
     </script>
 </body>
