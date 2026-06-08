@@ -1,12 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head><title>Testeur de Modèles PLV</title></head>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Multi-Pôles — Simulateur PLV 3D bêta</title>
+<style>
+:root{--bg:#f4efe6;--ink:#14110e;--muted:#766b5d;--burnt:#b35a28;--card:#fffaf1;--line:#251f18;--blue:#071225;--paper:#eadfc9}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);height:100vh;overflow:hidden}.app{display:grid;grid-template-columns:360px 1fr;height:100vh}.panel{background:#111; color:#f7efe2; padding:22px; overflow:auto; border-right:1px solid #34281f}.brand{display:flex;gap:12px;align-items:center;margin-bottom:20px}.logo{width:42px;height:42px;border:1px solid #c77b42;display:grid;place-items:center;font-weight:800;color:#e5b27a}.brand h1{font-size:19px;margin:0}.brand p{margin:4px 0 0;color:#b8aa98;font-size:12px}.panel section{border-top:1px solid #352d26;padding:16px 0}.panel h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#e0a96a;margin:0 0 12px}.upload{display:block;border:1px dashed #b97742;padding:14px;border-radius:12px;text-align:center;color:#f5dfc4;cursor:pointer;background:#1c1713}.upload input{display:none}.row{display:grid;grid-template-columns:1fr 56px;gap:12px;align-items:center;margin:10px 0}.row label{font-size:13px;color:#e9dccb}.row output{font-variant-numeric:tabular-nums;color:#e0a96a;text-align:right}.panel input[type=range]{width:100%;accent-color:#c26b31}.panel select,.panel button{width:100%;border:1px solid #4b3a2e;background:#211914;color:#f7efe2;border-radius:10px;padding:11px;margin:6px 0;cursor:pointer}.panel button:hover{border-color:#b97742}.main{position:relative;overflow:hidden;background:linear-gradient(135deg,#fbf6ec,#e8dfd1)}.stageTop{position:absolute;top:18px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:center;z-index:3}.pill{background:rgba(255,250,241,.84);border:1px solid rgba(30,24,18,.15);padding:10px 14px;border-radius:999px;font-size:13px;color:#473a2d;backdrop-filter:blur(8px)}.workspace{height:100%;display:grid;grid-template-columns:34% 66%;gap:0}.scene{perspective:1000px;display:grid;place-items:center;height:100%}.plv{position:relative;width:var(--w);height:var(--h);background:#ccc;transform-style:preserve-3d;transform:rotateY(-20deg) rotateX(5deg)}.shelf{position:absolute;width:100%;height:10px;background:#999;bottom:var(--z)}.product{position:absolute;width:var(--pw);height:20px;background:blue;bottom:var(--pz)}
+</style>
+</head>
 <body>
-    <h1>Sélecteur de Modèles de Test</h1>
-    <select onchange="window.location.href='models/' + this.value + '.html'">
-        <option value="">-- Choisir un modèle --</option>
-        <option value="A001">Modèle A001 (4 étagères)</option>
-        <option value="B002">Modèle B002 (Test)</option>
-    </select>
+<div class="app">
+  <aside class="panel">
+    <div class="brand"><div class="logo">MP</div><div><h1>Multi-Pôles 3D</h1><p>Bêta locale</p></div></div>
+    <section><h2>1. Paramètres</h2><div id="controls"></div></section>
+  </aside>
+  <main class="main">
+    <div class="scene" id="scene"><div id="model"></div></div>
+  </main>
+</div>
+<script>
+const state={width:120,height:150,depth:55,shelves:4,products:5};
+const specs=[['width','Largeur',40,220,'cm'],['height','Hauteur',40,260,'cm'],['depth','Profondeur',20,160,'cm'],['shelves','Étages',1,8,'']];
+const controls=document.getElementById('controls'), model=document.getElementById('model');
+function makeControls(){controls.innerHTML=''; specs.forEach(([k,label,min,max,unit])=>{const row=document.createElement('div');row.className='row';const lab=document.createElement('label');lab.innerHTML=`${label}<br><input id="${k}" type="range" min="${min}" max="${max}" value="${state[k]}">`;const out=document.createElement('output');out.id=k+'Out';row.append(lab,out);controls.append(row);document.getElementById(k).oninput=e=>{state[k]=Number(e.target.value);render();};});}
+function render(){specs.forEach(s=>document.getElementById(s[0]+'Out').textContent=state[s[0]]+s[4]); const scale=2; const W=state.width*scale,D=state.depth*scale,H=state.height*scale; model.style.setProperty('--w',W+'px'); model.style.setProperty('--h',H+'px'); model.innerHTML='<div class="shelf" style="--z:0px"></div>'; for(let s=0;s<state.shelves;s++){const shelf=document.createElement('div');shelf.className='shelf'; shelf.style.setProperty('--z',(H/(state.shelves+1))*(s+1)+'px'); model.append(shelf);}}
+makeControls();render();
+</script>
 </body>
 </html>
