@@ -1,28 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Multi-Pôles — Simulateur PLV 3D</title>
-<style>
-:root{--bg:#fff;--ink:#171717;--line:#eee}
-body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
-.viewer{width:100%;max-width:600px;height:400px;background:#f9f9f9;border:1px solid #ddd;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative}
-.shelf{width:70%;height:10px;background:#333;margin:8px 0;border-radius:2px}
-.controls{display:flex;gap:10px}
-button{padding:12px 24px;border-radius:6px;cursor:pointer;border:1px solid #000;background:#000;color:#fff}
-</style>
+    <meta charset="UTF-8">
+    <title>Multipoles 3D Studio - Mockup A001</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f7fb; margin: 0; padding: 20px; color: #1a202c; }
+        .app-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .sidebar { width: 300px; background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
+        .row-display { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .view-box { border: 1px solid #e2e8f0; height: 200px; display: flex; align-items: center; justify-content: center; background: #fdfdfd; font-size: 12px; color: #718096; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #002d72; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h1>Modèle 4 Étagères</h1>
-    <div class="viewer">
-        <div class="shelf"></div>
-        <div class="shelf"></div>
-        <div class="shelf"></div>
-        <div class="shelf"></div>
-    </div>
-    <div class="controls">
-        <button onclick="alert('Modèle validé et banque image OK')">VALIDER ET ENVOYER EN BANQUE IMAGE</button>
-    </div>
+<div class="app-container">
+    <aside class="sidebar">
+        <h3>PLV 4 ÉTAGÈRES – Réf. A001</h3>
+        <div class="input-group"><label>Hauteur totale</label><input value="1600"></div>
+        <div class="input-group"><label>Largeur</label><input value="700"></div>
+        <div class="input-group"><label>Profondeur</label><input value="450"></div>
+        <button>Appliquer</button>
+    </aside>
+    <main class="main-content">
+        <div class="row-display">
+            <div class="view-box">Face</div><div class="view-box">3/4</div><div class="view-box">Côté</div><div class="view-box">Arrière</div>
+        </div>
+        <div class="row-display">
+            <div class="view-box">Face (Produits)</div><div class="view-box">3/4 (Produits)</div><div class="view-box">Côté (Produits)</div><div class="view-box">Arrière (Produits)</div>
+        </div>
+        <button onclick="alert('Modèle A001 validé et envoyé en banque image.')" style="width: 200px;">Valider le modèle</button>
+    </main>
+</div>
 </body>
 </html>
