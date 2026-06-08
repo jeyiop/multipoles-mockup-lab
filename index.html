@@ -1,51 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modèle PLV 4 Étagères</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px; background: #fff; }
-        
-        /* Modèle 3D inspiré de votre PLV réelle */
-        .plv-stand {
-            width: 220px;
-            height: 400px;
-            background: #fff;
-            border: 2px solid #000;
-            position: relative;
-            transform: perspective(600px) rotateY(-10deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 20px 0;
-            box-shadow: 15px 15px 0px rgba(0,0,0,0.1);
-        }
-
-        /* 4 Étagères visibles */
-        .shelf {
-            width: 85%;
-            height: 12px;
-            background: #333;
-            border-bottom: 4px solid #000;
-            border-radius: 2px;
-        }
-
-        .controls { margin-top: 50px; }
-        button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #000; color: #fff; border: none; border-radius: 4px; }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Multi-Pôles — Simulateur PLV 3D</title>
+<style>
+:root{--bg:#fff;--ink:#171717;--line:#eee}
+body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+.viewer{width:100%;max-width:600px;height:400px;background:#f9f9f9;border:1px solid #ddd;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative}
+.shelf{width:70%;height:10px;background:#333;margin:8px 0;border-radius:2px}
+.controls{display:flex;gap:10px}
+button{padding:12px 24px;border-radius:6px;cursor:pointer;border:1px solid #000;background:#000;color:#fff}
+</style>
 </head>
 <body>
-    <h1>Modèle PLV : 4 Étagères</h1>
-    <div class="plv-stand">
+    <h1>Modèle 4 Étagères</h1>
+    <div class="viewer">
         <div class="shelf"></div>
         <div class="shelf"></div>
         <div class="shelf"></div>
         <div class="shelf"></div>
     </div>
     <div class="controls">
-        <button onclick="alert('Modèle archivé')">VALIDER ET ENVOYER</button>
+        <button onclick="alert('Modèle validé et banque image OK')">VALIDER ET ENVOYER EN BANQUE IMAGE</button>
     </div>
 </body>
 </html>
