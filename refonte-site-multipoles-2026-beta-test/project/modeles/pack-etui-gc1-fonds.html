@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Étui carton GC1 — pattes opposées / alternées / fond automatique</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  three-d-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;height:100%;background:#efece6}
+  body{font-family:"Instrument Sans",system-ui,sans-serif;color:#2b2620}
+  a{color:#5a5348}
+  a:hover{color:#2b2620}
+  #panel{position:fixed;top:22px;left:24px;z-index:5;width:256px;display:flex;flex-direction:column;gap:11px}
+  #panel h1{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.01em;line-height:1.35}
+  #panel h1 span{display:block;font-size:11px;font-weight:400;color:#7a7367}
+  #variants{display:flex;flex-wrap:wrap;gap:4px}
+  #variants button{
+    font:inherit;font-size:11.5px;line-height:1;padding:6px 9px;border:1px solid #cfc8bb;
+    border-radius:2px;background:#faf8f4;color:#4a443b;cursor:pointer;
+  }
+  #variants button:hover{border-color:#8b8378;color:#2b2620}
+  #variants button[aria-pressed="true"]{background:#2b2620;border-color:#2b2620;color:#faf8f4}
+  #toggle{
+    font:inherit;font-size:11.5px;line-height:1;padding:7px 10px;align-self:flex-start;
+    border:1px solid #2b2620;border-radius:2px;background:transparent;color:#2b2620;cursor:pointer;
+    display:flex;align-items:center;gap:7px;
+  }
+  #toggle:hover{background:#2b2620;color:#faf8f4}
+  #toggle svg{width:9px;height:9px;overflow:visible}
+  #note{margin:0;font-size:11px;line-height:1.45;color:#7a7367;text-wrap:pretty}
+  #note b{font-weight:500;color:#4a443b;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Étui carton GC1 350 g/m²<span>82 × 82 × 285 mm · flacon 700 ml</span></h1>
+  <div id="variants">
+    <button type="button" data-v="opposees">Pattes opposées</button>
+    <button type="button" data-v="alternees">Alternées</button>
+    <button type="button" data-v="auto">Fond auto</button>
+  </div>
+  <button type="button" id="toggle">
+    <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 6.5 5 2.5 9 6.5"/></svg>
+    <span id="toggle-label">Ouvrir l'étui</span>
+  </button>
+  <p id="note"></p>
+</div>
+
+<three-d-stage name="etui-gc1" background="#efece6"></three-d-stage>
+<script src="three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const W = 0.082, D = 0.082, H = 0.285, t = 0.0006, kerf = 0.0016;
+
+const M = {
+  board: new THREE.MeshStandardMaterial({ name:'carton_gc1', color:0xf6f3ec, roughness:0.7, metalness:0.02 }),
+  core:  new THREE.MeshStandardMaterial({ name:'tranche_carton', color:0xc8b596, roughness:0.95, metalness:0 })
+};
+const F = (px,nx,py,ny,pz,nz) => [px,nx,py,ny,pz,nz];
+const wallFB = F(M.core, M.core, M.core, M.core, M.board, M.board);
+const wallLR = F(M.board, M.board, M.core, M.core, M.core, M.core);
+const panelH = F(M.core, M.core, M.board, M.board, M.core, M.core);
+
+let hinges = [], sealed = [];
+
+function mesh(parent, name, geo, mat, pos, rot) {
+  const m = new THREE.Mesh(geo, mat);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0], rot[1], rot[2]);
+  parent.add(m);
+  return m;
+}
+function pivot(parent, name, pos, ry) {
+  const g = new THREE.Group();
+  g.name = name;
+  if (pos) g.position.set(pos[0], pos[1], pos[2]);
+  if (ry) g.rotation.y = ry;
+  parent.add(g);
+  return g;
+}
+
+/* Fermeture à languette. hinge = -1 : patte articulée sur le panneau arrière,
+   +1 : sur le panneau avant. up = +1 dessus, -1 dessous. */
+function closure(parent, suffix, hinge, up) {
+  const y = up > 0 ? H : 0;
+  const din = D - 2*t, lid = din - kerf, fw = 0.030;
+
+  [['g', -1], ['d', 1]].forEach(([n, sx]) => {
+    const p = pivot(parent, 'rabat_poussiere_' + n + '_' + suffix, [sx * (W/2 - t), y - up*(t*1.5 + 0.0003), 0]);
+    const geo = new THREE.BoxGeometry(fw, t, din - 0.002);
+    geo.translate(-sx * fw/2, 0, 0);
+    mesh(p, 'rabat_poussiere_' + n + '_' + suffix + '_pli', geo, M.board);
+    hinges.push({ g: p, axis: 'z', open: -sx * up * 1.40 });
+  });
+
+  const p = pivot(parent, 'panneau_fermeture_' + suffix, [0, y - up*t/2, hinge * (D/2 - t)]);
+  const pg = new THREE.BoxGeometry(W - 2*t - 0.0006, t, lid);
+  pg.translate(0, 0, -hinge * lid/2);
+  mesh(p, 'panneau_fermeture_' + suffix + '_pli', pg, panelH);
+  const tg = new THREE.BoxGeometry(W - 2*t - 0.008, 0.020, t);
+  tg.translate(0, -up * 0.011, -hinge * (lid - t));
+  mesh(p, 'languette_' + suffix, tg, M.board);
+  hinges.push({ g: p, axis: 'x', open: hinge * up * 1.92 });
+}
+
+/* Fond automatique : 4 rabats croisés en diagonale, doublure intérieure. */
+function autoBottom(parent) {
+  const a = W/2 - t*1.2, g = 0.0009;
+  const s = new THREE.Shape();
+  s.moveTo(0, -a + g); s.lineTo(0, a - g); s.lineTo(a - g, 0); s.closePath();
+  const geo = new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: false });
+  [['gauche',0], ['avant',Math.PI/2], ['droit',Math.PI], ['arriere',-Math.PI/2]].forEach(([n, ry]) => {
+    const base = pivot(parent, 'fond_auto_' + n + '_base', null, ry);
+    const p = pivot(base, 'fond_auto_' + n + '_pli', [-a, 0, 0]);
+    mesh(p, 'fond_auto_' + n, geo, [M.board, M.core], null, [-Math.PI/2, 0, 0]);
+    hinges.push({ g: p, axis: 'z', open: -1.40 });
+  });
+  sealed.push(mesh(parent, 'doublure_fond', new THREE.BoxGeometry(W - 2*t - 0.0012, t, D - 2*t - 0.0012),
+       F(M.core, M.core, M.board, M.board, M.core, M.core), [0, t + t/2, 0]));
+}
+
+function build(variant) {
+  hinges = []; sealed = [];
+  const g = new THREE.Group();
+  g.name = 'etui_' + variant;
+  mesh(g, 'panneau_avant',   new THREE.BoxGeometry(W, H, t), wallFB, [0, H/2,  D/2 - t/2]);
+  mesh(g, 'panneau_arriere', new THREE.BoxGeometry(W, H, t), wallFB, [0, H/2, -D/2 + t/2]);
+  mesh(g, 'panneau_gauche',  new THREE.BoxGeometry(t, H, D - 2*t), wallLR, [-W/2 + t/2, H/2, 0]);
+  mesh(g, 'panneau_droit',   new THREE.BoxGeometry(t, H, D - 2*t), wallLR, [ W/2 - t/2, H/2, 0]);
+  mesh(g, 'patte_de_collage', new THREE.BoxGeometry(0.015, H - 0.003, t), M.board,
+       [-W/2 + t + 0.0085, H/2, -D/2 + 2*t + 0.0003]);
+  closure(g, 'dessus', -1, 1);
+  if (variant === 'auto') autoBottom(g);
+  else closure(g, 'dessous', variant === 'alternees' ? 1 : -1, -1);
+  g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  return g;
+}
+
+const NOTES = {
+  opposees:  "<b>ECMA A1010</b> · Languettes du dessus et du dessous articulées sur le même panneau. Montage manuel.",
+  alternees: "<b>ECMA A1020</b> · Languette du dessus à l'arrière, celle du dessous à l'avant. Le plus courant en étui pharma.",
+  auto:      "<b>ECMA A6050</b> · Fond pré-collé en 4 rabats croisés : verrouillage au dressage, pour flacons lourds."
+};
+const btns = [...document.querySelectorAll('#variants button')];
+const note = document.getElementById('note');
+const toggle = document.getElementById('toggle');
+const toggleLabel = document.getElementById('toggle-label');
+let placed = false, open = 0, target = 0, raf = null;
+
+function applyFold(p) {
+  hinges.forEach(h => { h.g.rotation[h.axis] = h.open * p; });
+  sealed.forEach(m => { m.visible = p < 0.35; });
+}
+function animate(t0, from) {
+  cancelAnimationFrame(raf);
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 560);
+    const e = k < 0.5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
+    open = from + (target - from) * e;
+    applyFold(open);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+function setOpen(v) {
+  target = v;
+  toggle.setAttribute('aria-pressed', String(v === 1));
+  toggleLabel.textContent = v === 1 ? "Fermer l'étui" : "Ouvrir l'étui";
+  toggle.querySelector('svg').style.transform = v === 1 ? 'rotate(180deg)' : 'none';
+  animate(performance.now(), open);
+}
+
+function show(v) {
+  const cam = stage._camera, ctrl = stage._controls;
+  const p = placed ? cam.position.clone() : null, tgt = placed ? ctrl.target.clone() : null;
+  stage.setObject(build(v));
+  applyFold(open);
+  if (p) { cam.position.copy(p); ctrl.target.copy(tgt); ctrl.update(); }
+  placed = true;
+  stage.setAttribute('name', 'etui-gc1-' + v);
+  note.innerHTML = NOTES[v];
+  btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+}
+btns.forEach(b => b.addEventListener('click', () => show(b.dataset.v)));
+toggle.addEventListener('click', () => setOpen(target === 1 ? 0 : 1));
+show('alternees');
+if (window.self !== window.top) {
+  let manual = false, scrollDriven = false;
+  window.addEventListener('message', ev => {
+    const d = ev.data || {};
+    if (d.mp === 'fold') { scrollDriven = true; open = Math.max(0, Math.min(1, +d.p || 0)); target = open; applyFold(open); }
+  });
+  toggle.addEventListener('click', () => { manual = true; });
+  const t0 = performance.now();
+  const loop = now => {
+    if (!manual && !scrollDriven) { open = 0.5 - 0.5 * Math.cos(((now - t0) % 9000) / 9000 * 2 * Math.PI); target = open; applyFold(open); }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffret microcannelure — cloche ou caisse américaine</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  three-d-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;height:100%;background:#efece6}
+  body{font-family:"Instrument Sans",system-ui,sans-serif;color:#2b2620}
+  a{color:#5a5348}
+  a:hover{color:#2b2620}
+  #panel{position:fixed;top:22px;left:24px;z-index:5;width:262px;display:flex;flex-direction:column;gap:12px}
+  #panel h1{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.01em;line-height:1.35}
+  #panel h1 span{display:block;font-size:11px;font-weight:400;color:#7a7367}
+  #phase{display:flex;flex-direction:column;gap:5px}
+  #phase input{width:100%;margin:0;accent-color:#2b2620;height:14px}
+  #phase div{display:flex;justify-content:space-between;font-size:10px;color:#7a7367;letter-spacing:.02em}
+  #phase div b{font-weight:500;color:#2b2620}
+  .row{display:flex;flex-wrap:wrap;gap:4px}
+  .row button{
+    font:inherit;font-size:11.5px;line-height:1;padding:6px 9px;border:1px solid #cfc8bb;
+    border-radius:2px;background:#faf8f4;color:#4a443b;cursor:pointer;
+  }
+  .row button:hover{border-color:#8b8378;color:#2b2620}
+  .row button.primary,.row button[aria-pressed="true"]{background:#2b2620;border-color:#2b2620;color:#faf8f4}
+  .row button.primary:hover{background:#453e35;border-color:#453e35}
+  #note{margin:0;font-size:11px;line-height:1.45;color:#7a7367;text-wrap:pretty}
+  #note b{font-weight:500;color:#4a443b}
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Coffret microcannelure — grand format<span>Double microcannelure 3 mm, couverture blanche</span></h1>
+  <div class="row" id="variants">
+    <button type="button" data-v="cloche">Cloche et fond</button>
+    <button type="button" data-v="americaine">Caisse américaine</button>
+  </div>
+  <div id="phase">
+    <input type="range" id="slider" min="0" max="1" step="0.002" value="0" aria-label="Ouverture">
+    <div><span id="l0"><b>Fermé</b></span><span id="l1">Ouvert</span></div>
+  </div>
+  <div class="row">
+    <button type="button" id="play" class="primary">Ouvrir</button>
+    <button type="button" id="v34">Vue 3/4</button>
+    <button type="button" id="vhaut">Vue de dessus</button>
+  </div>
+  <p id="note"></p>
+</div>
+
+<three-d-stage name="coffret-microcannelure" background="#efece6"></three-d-stage>
+<script src="three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const tb = 0.003, jeu = 0.001;                      // double microcannelure + jeu cloche/fond
+const W = 0.400, D = 0.280, H = 0.120;              // fond / caisse
+const W2 = W + 2*(tb + jeu), D2 = D + 2*(tb + jeu); // cloche : 408 × 288
+const HC = 0.090, REVEAL = 0.035, LIFT = 0.115;     // cloche : coiffe 85 mm, réserve 35 mm
+const OPENA = 1.75;                                 // ~100° pour les rabats
+
+const M = {
+  board: new THREE.MeshStandardMaterial({ name:'couverture_blanche', color:0xf8f6f2, roughness:0.62, metalness:0.02 }),
+  core:  new THREE.MeshStandardMaterial({ name:'tranche_cannelure', color:0xe7e0d4, roughness:0.88, metalness:0 })
+};
+const F = (px,nx,py,ny,pz,nz) => [px,nx,py,ny,pz,nz];
+const wallZ = F(M.core, M.core, M.core, M.core, M.board, M.board);
+const wallX = F(M.board, M.board, M.core, M.core, M.core, M.core);
+const panelY = F(M.core, M.core, M.board, M.board, M.core, M.core);
+
+function box(parent, name, size, pos, mats) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), mats);
+  m.name = name;
+  m.position.set(pos[0], pos[1], pos[2]);
+  parent.add(m);
+  return m;
+}
+function walls(g, pre, w, d, h, y0) {
+  box(g, pre + '_cote_avant',   [w, h, tb], [0, y0 + h/2,  d/2 - tb/2], wallZ);
+  box(g, pre + '_cote_arriere', [w, h, tb], [0, y0 + h/2, -d/2 + tb/2], wallZ);
+  box(g, pre + '_cote_droit',  [tb, h, d - 2*tb], [ w/2 - tb/2, y0 + h/2, 0], wallX);
+  box(g, pre + '_cote_gauche', [tb, h, d - 2*tb], [-w/2 + tb/2, y0 + h/2, 0], wallX);
+}
+
+/* Plateau : panneau plein + 4 côtés. dir = +1 panneau en bas, -1 panneau en haut. */
+function tray(parent, name, w, d, h, dir) {
+  const g = new THREE.Group();
+  g.name = name;
+  box(g, name + '_panneau', [w, tb, d], [0, dir > 0 ? tb/2 : h - tb/2, 0], panelY);
+  walls(g, name, w, d, h - tb, dir > 0 ? tb : 0);
+  parent.add(g);
+  return g;
+}
+
+/* Rabat articulé sur l'arête d'un côté. axis 'x' : le rabat se développe suivant z,
+   axis 'z' : suivant x. dir = sens de développement. */
+function flap(parent, name, w, dep, axis, dir, pos) {
+  const g = new THREE.Group();
+  g.name = name + '_pli';
+  g.position.set(pos[0], pos[1], pos[2]);
+  parent.add(g);
+  const size = axis === 'x' ? [w, tb, dep] : [dep, tb, w];
+  const geo = new THREE.BoxGeometry(size[0], size[1], size[2]);
+  geo.translate(axis === 'x' ? 0 : dir * dep/2, 0, axis === 'x' ? dir * dep/2 : 0);
+  const m = new THREE.Mesh(geo, panelY);
+  m.name = name;
+  g.add(m);
+  return { g, axis, sign: axis === 'x' ? -dir : dir };
+}
+
+/* Les 4 rabats d'un bout de caisse : 2 petits (sur les côtés courts) sous 2 grands. */
+function rsc(parent, suffix, y, up) {
+  const dep = D/2 - tb - 0.002;
+  const yIn  = y + up * tb * 1.5, yOut = y + up * tb * 0.5;
+  const inner = [
+    flap(parent, 'rabat_int_droit_' + suffix,  D - 2*tb, dep, 'z', -1, [ W/2 - tb, yIn, 0]),
+    flap(parent, 'rabat_int_gauche_' + suffix, D - 2*tb, dep, 'z',  1, [-W/2 + tb, yIn, 0])
+  ];
+  const outer = [
+    flap(parent, 'rabat_ext_avant_' + suffix,   W, dep, 'x', -1, [0, yOut,  D/2 - tb]),
+    flap(parent, 'rabat_ext_arriere_' + suffix, W, dep, 'x',  1, [0, yOut, -D/2 + tb])
+  ];
+  return { inner, outer };
+}
+const clamp01 = x => Math.min(1, Math.max(0, x));
+function setFlaps(set, a) { set.forEach(f => { f.g.rotation[f.axis] = f.sign * a; }); }
+
+function buildCloche() {
+  const g = new THREE.Group();
+  g.name = 'coffret_cloche';
+  tray(g, 'fond', W, D, H, 1);
+  const cl = tray(g, 'cloche', W2, D2, HC, -1);
+  return { g, set: p => { cl.position.y = REVEAL + LIFT * p; } };
+}
+
+function buildAmericaine() {
+  const g = new THREE.Group();
+  g.name = 'caisse_americaine';
+  walls(g, 'caisse', W, D, H, 0);
+  const bas = rsc(g, 'fond', 0, 1);
+  setFlaps(bas.inner, 0); setFlaps(bas.outer, 0);
+  const haut = rsc(g, 'dessus', H, -1);
+  return { g, set: p => {
+    setFlaps(haut.outer, OPENA * clamp01(p / 0.55));
+    setFlaps(haut.inner, OPENA * clamp01((p - 0.45) / 0.55));
+  } };
+}
+
+const NOTES = {
+  cloche: "<b>Cloche et fond, deux parties.</b> La cloche coiffe le fond sur 85 mm et laisse une réserve de 35 mm. Jeu de 1 mm par côté ; angles collés, tranches couvertes.",
+  americaine: "<b>Caisse américaine, rabats sur les quatre côtés.</b> Les deux grands rabats se rejoignent au centre, les deux petits passent dessous. Fermeture par adhésif, sans découpe supplémentaire."
+};
+const NOTE_DIM = { cloche: '408 × 288 × 125 mm hors-tout', americaine: '400 × 280 × 120 mm hors-tout' };
+
+const btns = [...document.querySelectorAll('#variants button')];
+const slider = document.getElementById('slider');
+const l0 = document.getElementById('l0'), l1 = document.getElementById('l1');
+const play = document.getElementById('play');
+const note = document.getElementById('note');
+let model = null, placed = false, raf = null;
+
+function apply(p) {
+  model.set(p);
+  slider.value = p;
+  l0.innerHTML = p < 0.02 ? '<b>Fermé</b>' : 'Fermé';
+  l1.innerHTML = p > 0.98 ? '<b>Ouvert</b>' : 'Ouvert';
+  play.textContent = p > 0.5 ? 'Fermer' : 'Ouvrir';
+}
+function show(v) {
+  cancelAnimationFrame(raf);
+  const p = placed ? +slider.value : 0;
+  const cam = stage._camera, ctrl = stage._controls;
+  const cp = placed ? cam.position.clone() : null, ct = placed ? ctrl.target.clone() : null;
+  model = v === 'cloche' ? buildCloche() : buildAmericaine();
+  model.g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  model.set(1);
+  stage.setObject(model.g);     // cadrage sur l'état ouvert : les deux états tiennent dans le champ
+  if (cp) { cam.position.copy(cp); ctrl.target.copy(ct); ctrl.update(); }
+  placed = true;
+  stage.setAttribute('name', 'coffret-microcannelure-' + v);
+  note.innerHTML = NOTES[v] + ' ' + NOTE_DIM[v] + '.';
+  btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  apply(p);
+}
+btns.forEach(b => b.addEventListener('click', () => show(b.dataset.v)));
+
+slider.addEventListener('input', () => { cancelAnimationFrame(raf); apply(+slider.value); });
+play.addEventListener('click', () => {
+  cancelAnimationFrame(raf);
+  const from = +slider.value < 0.5 ? 0 : 1, to = from === 0 ? 1 : 0, t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 1400);
+    const e = k < 0.5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
+    apply(from + (to - from) * e);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+});
+
+const tanH = () => Math.tan((stage._camera.fov * Math.PI) / 360);
+function view(dx, dy, dz) {
+  const sph = new THREE.Box3().setFromObject(model.g).getBoundingSphere(new THREE.Sphere());
+  const dist = (sph.radius / tanH()) * 1.28;
+  stage._camera.position.copy(sph.center).add(new THREE.Vector3(dx, dy, dz).normalize().multiplyScalar(dist));
+  stage._controls.target.copy(sph.center);
+  stage._controls.update();
+}
+document.getElementById('v34').addEventListener('click', () => view(1, 0.55, 1.25));
+document.getElementById('vhaut').addEventListener('click', () => view(0.4, 1.5, 0.7));
+
+show('cloche');
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

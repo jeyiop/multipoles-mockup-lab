@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>PLV pharmacie — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#c08e57"/>
+    <rect x="38" y="30" width="24" height="10" fill="#f4f1e9"/>
+    <rect x="44" y="26" width="12" height="18" fill="#0f8a4f"/>
+    <rect x="38" y="30" width="24" height="4" fill="#0f8a4f"/>
+    <g fill="#f4f1e9">
+      <rect x="34" y="46" width="32" height="3"/>
+      <rect x="34" y="54" width="32" height="3"/>
+      <rect x="34" y="62" width="32" height="3"/>
+      <rect x="34" y="70" width="32" height="3"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "PRE-SOL-PH-4E",
+  "famille": "PLV",
+  "type": "presentoir de sol 4 etageres + fronton",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "matiere": "carton double cannelure blanc recto/verso",
+  "cannelure": "double",
+  "epaisseur_mm": 5,
+  "hors_tout_mm": { "l": 520, "p": 300, "h": 1820 },
+  "corps_mm": { "l": 400, "p": 300, "h": 1420 },
+  "flanc": { "retour_tranche_mm": 15, "faces": 2, "commentaire": "retour replie sur chaque tranche verticale" },
+  "socle_mm": { "l": 400, "p": 300, "h": 140 },
+  "fronton_mm": { "l": 520, "h": 490, "decoupe": "arche" },
+  "chargement": { "etageres": 4, "inclinaison_deg": 5, "arretoir_mm": 48 },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-pharmacie-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — présentoir de sol 4 étagères + fronton</b>
+  <span>corps 40 × 30 cm · fronton 52 cm · H 182 cm · carton blanc 5 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const T = 0.005;          // épaisseur double cannelure
+const W = 0.40;           // largeur hors tout du corps
+const DZ = 0.15;          // demi-profondeur (avant +Z / arrière -Z)
+const SOCLE_H = 0.14;     // hauteur du socle
+const TOP_Y = 1.42;       // haut du corps
+const SHELVES = [0.14, 0.46, 0.78, 1.10];
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton };
+
+const plv = new THREE.Group();
+plv.name = 'presentoir_plv_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+
+/* ---------- socle ---------- */
+plv.add(mesh('car_socle_caisse', box(W, SOCLE_H, 0.30), mat.kraft, [0, SOCLE_H / 2, 0]));
+
+/* ---------- flancs découpés ---------- */
+const flanc = new THREE.Shape();
+flanc.moveTo(-DZ, 0);
+flanc.lineTo(DZ, 0);
+flanc.lineTo(DZ, 0.86);
+flanc.lineTo(0.105, 1.12);
+flanc.lineTo(0.105, 1.22);
+flanc.quadraticCurveTo(0.105, 1.28, 0.045, 1.28);
+flanc.lineTo(-DZ, 1.28);
+flanc.closePath();
+const flancGeo = extrude(flanc, T);
+plv.add(mesh('car_flanc_droit', flancGeo, mat.kraft, [W / 2, SOCLE_H, 0], [0, -Math.PI / 2, 0]));
+plv.add(mesh('car_flanc_gauche', flancGeo, mat.kraft, [-W / 2 + T, SOCLE_H, 0], [0, -Math.PI / 2, 0]));
+/* retour replié 15 mm sur chaque tranche verticale */
+[['droit', 1], ['gauche', -1]].forEach(([cote, sx]) => {
+  plv.add(mesh('car_flanc_' + cote + '_retour_avant', box(0.015, 0.86, T), mat.blanc,
+    [sx * (W / 2 - 0.0075), SOCLE_H + 0.43, DZ - T / 2]));
+  plv.add(mesh('car_flanc_' + cote + '_retour_arriere', box(0.015, 1.28, T), mat.blanc,
+    [sx * (W / 2 - 0.0075), SOCLE_H + 0.64, -DZ + T / 2]));
+});
+
+/* ---------- dos + traverse haute ---------- */
+plv.add(mesh('car_dos', box(W - 2 * T, TOP_Y - SOCLE_H, T), mat.blanc, [0, (TOP_Y + SOCLE_H) / 2, -DZ + T / 2]));
+plv.add(mesh('car_traverse_haute', box(W - 2 * T, T, 0.28), mat.kraft, [0, TOP_Y - T / 2, -0.008]));
+
+/* ---------- 4 étagères inclinées à 5° avec arrêtoir ---------- */
+SHELVES.forEach((y, i) => {
+  const n = i + 1;
+  const g = new THREE.Group();
+  g.name = 'car_etagere_' + n;
+  g.position.set(0, y, 0);
+  g.rotation.x = 0.087;
+  g.add(mesh('car_etagere_' + n + '_plateau', box(W - 2 * T, T, 0.26), mat.tranche, [0, T / 2, -0.008]));
+  g.add(mesh('car_etagere_' + n + '_arretoir', box(W - 2 * T, 0.048, T), mat.blanc, [0, 0.024 + T, 0.122 + T / 2]));
+  plv.add(g);
+});
+
+/* ---------- fronton ---------- */
+const F_HW = 0.26;
+const arche = new THREE.Shape();
+arche.moveTo(-F_HW, 0);
+arche.lineTo(F_HW, 0);
+arche.lineTo(F_HW, 0.26);
+arche.quadraticCurveTo(F_HW, 0.375, F_HW - 0.065, 0.41);
+arche.quadraticCurveTo(0, 0.49, -(F_HW - 0.065), 0.41);
+arche.quadraticCurveTo(-F_HW, 0.375, -F_HW, 0.26);
+arche.closePath();
+
+const fronton = new THREE.Group();
+fronton.name = 'car_fronton';
+fronton.position.set(0, 1.37, 0.02);
+fronton.rotation.x = -0.11;
+fronton.add(mesh('car_fronton_panneau', extrude(arche, T), mat.blanc));
+
+/* languette de pliage + contreforts, collés au dos du fronton */
+fronton.add(mesh('car_fronton_languette', box(0.30, T, 0.14), mat.kraft, [0, 0.055, -0.075]));
+const gousset = new THREE.Shape();
+gousset.moveTo(0, 0);
+gousset.lineTo(0.115, 0);
+gousset.lineTo(0, 0.15);
+gousset.closePath();
+const goussetGeo = extrude(gousset, T);
+fronton.add(mesh('car_fronton_contrefort_droit', goussetGeo, mat.kraft, [0.10, 0.058, -0.001], [0, Math.PI / 2, 0]));
+fronton.add(mesh('car_fronton_contrefort_gauche', goussetGeo, mat.kraft, [-0.105, 0.058, -0.001], [0, Math.PI / 2, 0]));
+plv.add(fronton);
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Nuancier Multi-Pôles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #F4F5F7;
+    --panel: #FFFFFF;
+    --panel-2: #EDEFF3;
+    --ink: #17191E;
+    --ink-2: #5C6270;
+    --ink-3: #878E9C;
+    --rule: #DBDFE7;
+    --rule-strong: #C3C9D4;
+    --trace: #2442C8;
+    --trace-soft: rgba(36, 66, 200, .09);
+  }
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #14161A;
+      --panel: #1B1E24;
+      --panel-2: #22262E;
+      --ink: #E9EBF0;
+      --ink-2: #A0A7B5;
+      --ink-3: #79808E;
+      --rule: #2C313A;
+      --rule-strong: #3B424E;
+      --trace: #8AA0F5;
+      --trace-soft: rgba(138, 160, 245, .13);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #14161A;
+    --panel: #1B1E24;
+    --panel-2: #22262E;
+    --ink: #E9EBF0;
+    --ink-2: #A0A7B5;
+    --ink-3: #79808E;
+    --rule: #2C313A;
+    --rule-strong: #3B424E;
+    --trace: #8AA0F5;
+    --trace-soft: rgba(138, 160, 245, .13);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 28px 72px;
+  }
+
+  /* ── Masthead ─────────────────────────────────────────────── */
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 14px;
+    font-size: 19px;
+    font-weight: 800;
+    font-stretch: 118%;
+    letter-spacing: .01em;
+  }
+  .wordmark::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background: var(--trace);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 800;
+    font-stretch: 112%;
+    line-height: 1.04;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+    max-width: 16ch;
+  }
+  .lede {
+    margin: 16px 0 0;
+    max-width: 56ch;
+    color: var(--ink-2);
+  }
+
+  /* The site's own technical cartouche, reused as the sheet's colophon. */
+  .cartouche {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    font-size: 11px;
+    letter-spacing: .05em;
+    min-width: 290px;
+  }
+  .cartouche div {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cartouche div:last-child { border-bottom: 0; }
+  .cartouche dt { color: var(--ink-3); }
+  .cartouche dd { margin: 0; font-weight: 500; text-align: right; }
+
+  /* ── Épreuves ─────────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 22px;
+    margin-top: 34px;
+  }
+
+  .epreuve {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    background: var(--panel);
+  }
+
+  /* The one bold element on the sheet: the actual inks, at full bleed. */
+  /* The 1px gutters keep near-identical pale inks (F2F2F3 / E9E9EA) reading
+     as four separate swatches rather than one wash. */
+  .band {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    height: 86px;
+    background: var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .band span { display: block; }
+
+  .hexes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--rule);
+    font-size: 9.5px;
+    letter-spacing: .07em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  .hexes span {
+    padding: 6px 8px;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+  }
+  .hexes span:last-child { border-right: 0; }
+
+  .epreuve-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 18px 20px;
+    flex: 1;
+  }
+  .ref-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ref {
+    padding: 3px 7px;
+    background: var(--trace-soft);
+    color: var(--trace);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+  }
+  .tag {
+    font-size: 10.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    font-stretch: 108%;
+    letter-spacing: -.012em;
+  }
+  .desc {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 14px;
+  }
+  .facts {
+    margin: 2px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: var(--ink-3);
+  }
+  .facts b { color: var(--ink-2); font-weight: 500; }
+
+  .open {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 16px;
+    background: var(--ink);
+    color: var(--ground);
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .12em;
+  }
+  .open:hover { background: var(--trace); color: #fff; }
+  .open:focus-visible { outline: 2px solid var(--trace); outline-offset: 3px; }
+
+  /* ── Notes ────────────────────────────────────────────────── */
+  .notes {
+    margin-top: 46px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule-strong);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 26px 34px;
+  }
+  .notes h3 {
+    margin: 0 0 8px;
+    font-size: 10.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 700;
+  }
+  .notes p { margin: 0 0 9px; font-size: 13.5px; color: var(--ink-2); max-width: 62ch; }
+  .notes p:last-child { margin-bottom: 0; }
+  .notes code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  @media (max-width: 620px) {
+    .sheet { padding: 28px 18px 56px; }
+    .cartouche { min-width: 0; width: 100%; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div>
+      <p class="wordmark">MULTI-PÔLES</p>
+      <h1>Six directions pour la même page</h1>
+      <p class="lede">
+        La nouvelle page d'accueil, mise en ligne dans ses six habillages. Contenu, maquettes 3D et
+        configurateur de devis identiques&nbsp;: seules changent les couleurs et les polices. Ouvrez-les,
+        comparez, tranchez.
+      </p>
+    </div>
+
+    <dl class="cartouche mono">
+      <div><dt>Projet</dt><dd>Refonte multi-poles.net</dd></div>
+      <div><dt>Source</dt><dd>Claude Design → statique</dd></div>
+      <div><dt>Épreuves</dt><dd>6 directions</dd></div>
+      <div><dt>Moteur 3D</dt><dd>three.js r184</dd></div>
+    </dl>
+  </header>
+
+  <div class="grid">
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#0B1526"></span><span style="background:#101D33"></span><span style="background:#5B8DD6"></span><span style="background:#F2762E"></span>
+      </div>
+      <div class="hexes mono"><span>0B1526</span><span>101D33</span><span>5B8DD6</span><span>F2762E</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">V2D</span><span class="tag mono">Industriel &amp; commercial</span></p>
+        <h2>Bleu Nuit</h2>
+        <p class="desc">
+          Fond bleu nuit profond, grille technique claire, accents bleu acier, CTA orange signal.
+          Les maquettes carton blanc ressortent comme en vitrine.
+        </p>
+        <p class="facts mono">
+          <span><b>La plus aboutie</b> — carrousels de modèles, cadres réglables, montages au scroll</span>
+          <span>7 maquettes 3D · Archivo + JetBrains Mono</span>
+        </p>
+        <a class="open mono" href="bleu-nuit.html">OUVRIR →</a>
+      </div>
+    </article>
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#FAF8F3"></span><span style="background:#E4DFD3"></span><span style="background:#2442C8"></span><span style="background:#5C1F2B"></span>
+      </div>
+      <div class="hexes mono"><span>FAF8F3</span><span>E4DFD3</span><span>2442C8</span><span>5C1F2B</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">ORIG</span><span class="tag mono">Le modèle d'origine</span></p>
+        <h2>Papier / Bordeaux</h2>
+        <p class="desc">
+          Fond crème, encre noire, bleu de tracé, mono technique. Un imprimeur qui montre son
+          savoir-faire — c'est la référence dont sont tirées les trois versions bis.
+        </p>
+        <p class="facts mono">
+          <span><b>Base de comparaison</b> — laissée intacte depuis la validation</span>
+          <span>7 maquettes 3D · Archivo + JetBrains Mono</span>
+        </p>
+        <a class="open mono" href="papier-bordeaux.html">OUVRIR →</a>
+      </div>
+    </article>
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#F7F2E9"></span><span style="background:#E4DACA"></span><span style="background:#6E1F2E"></span><span style="background:#6B6459"></span>
+      </div>
+      <div class="hexes mono"><span>F7F2E9</span><span>E4DACA</span><span>6E1F2E</span><span>6B6459</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">V2A</span><span class="tag mono">Éditorial luxe</span></p>
+        <h2>Papier</h2>
+        <p class="desc">
+          Ivoire sans grille, titres en Source Serif, accent bordeaux plus chaud. La plus haut de
+          gamme, la moins « bureau d'études ».
+        </p>
+        <p class="facts mono">
+          <span><b>Le pari cosmétique</b> — vend la matière plutôt que la précision</span>
+          <span>7 maquettes 3D · Source Serif 4 + Archivo</span>
+        </p>
+        <a class="open mono" href="v2a-papier.html">OUVRIR →</a>
+      </div>
+    </article>
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#121316"></span><span style="background:#2A2B30"></span><span style="background:#E0A458"></span><span style="background:#F2F0EB"></span>
+      </div>
+      <div class="hexes mono"><span>121316</span><span>2A2B30</span><span>E0A458</span><span>F2F0EB</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">V2B</span><span class="tag mono">Showroom sombre</span></p>
+        <h2>Charbon</h2>
+        <p class="desc">
+          Fond charbon, Space Grotesk, accent ambre, cadres 3D traités en vitrines. Les cadres des
+          maquettes sont restés crème — ils tranchent volontairement sur le fond.
+        </p>
+        <p class="facts mono">
+          <span><b>Contraste maximal</b> sur les maquettes carton blanc</span>
+          <span>7 maquettes 3D · Space Grotesk + IBM Plex Mono</span>
+        </p>
+        <a class="open mono" href="v2b-charbon.html">OUVRIR →</a>
+      </div>
+    </article>
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#F2F2F3"></span><span style="background:#D7D9DC"></span><span style="background:#5980A6"></span><span style="background:#1D1F20"></span>
+      </div>
+      <div class="hexes mono"><span>F2F2F3</span><span>D7D9DC</span><span>5980A6</span><span>1D1F20</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">V2C</span><span class="tag mono">Technique acier</span></p>
+        <h2>Blueprint</h2>
+        <p class="desc">
+          Barlow Condensed, bleu acier, grille conservée. L'esprit plan de découpe poussé au bout,
+          sur une base de page identique à l'originale.
+        </p>
+        <p class="facts mono">
+          <span><b>Le compromis</b> — l'austérité Industry sans en refaire la mise en page</span>
+          <span>7 maquettes 3D · Barlow Condensed + JetBrains Mono</span>
+        </p>
+        <a class="open mono" href="v2c-blueprint.html">OUVRIR →</a>
+      </div>
+    </article>
+
+    <article class="epreuve">
+      <div class="band" aria-hidden="true">
+        <span style="background:#F2F2F3"></span><span style="background:#E9E9EA"></span><span style="background:#5980A6"></span><span style="background:#2C455D"></span>
+      </div>
+      <div class="hexes mono"><span>F2F2F3</span><span>E9E9EA</span><span>5980A6</span><span>2C455D</span></div>
+      <div class="epreuve-body">
+        <p class="ref-row"><span class="ref mono">IND</span><span class="tag mono">Bureau d'études</span></p>
+        <h2>Industry / Acier</h2>
+        <p class="desc">
+          Le design-system Industry appliqué de bout en bout&nbsp;: repères blueprint aux angles des
+          blocs, typographie condensée, photos lavées à l'acier.
+        </p>
+        <p class="facts mono">
+          <span><b>Instantané plus ancien</b> — antérieur à la galerie de 16 modèles</span>
+          <span>2 maquettes 3D · Barlow Condensed + design-system Industry</span>
+        </p>
+        <a class="open mono" href="industry-acier.html">OUVRIR →</a>
+      </div>
+    </article>
+
+  </div>
+
+  <section class="notes">
+    <div>
+      <h3>Ce qui marche sur chaque page</h3>
+      <p>
+        Le héro se plie au défilement, les quatre figures tournent et s'ouvrent en boucle, la carte
+        des six sites est là, et le configurateur de devis charge les 16 modèles PLV et packaging en
+        3D interactive. Tout tourne dans le navigateur, sans serveur.
+      </p>
+      <p>
+        En bas à droite, le bouton <code>RÉGLAGES</code> rouvre les curseurs du panneau Tweaks —
+        modèle du héro, couleur du coffret, grille technique, hauteur des cadres. Les réglages ne
+        sont pas mémorisés d'une visite à l'autre.
+      </p>
+    </div>
+    <div>
+      <h3>Ce qui reste à faire</h3>
+      <p>
+        Les six villes d'implantation et leurs spécialités sont encore illustratives, les
+        certifications attendent les vrais logos, et la galerie photo attend vos prises de vue
+        studio. Les cotes des coffrets packaging sont indicatives.
+      </p>
+      <p>
+        L'export OBJ/GLB des maquettes est désactivé ici&nbsp;: le lecteur de pages n'autorise pas les
+        téléchargements. Il refonctionne dès que le site est posé sur un vrai hébergeur.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>PLV de sol double face — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="34" y="14" width="32" height="12" fill="#f4f1e9"/>
+    <rect x="46" y="10" width="8" height="20" fill="#0f8a4f"/>
+    <rect x="34" y="17" width="32" height="5" fill="#0f8a4f"/>
+    <rect x="26" y="28" width="48" height="12" fill="#f4f1e9"/>
+    <rect x="26" y="32" width="48" height="4" fill="#0f8a4f"/>
+    <rect x="26" y="40" width="6" height="42" fill="#f4f1e9"/>
+    <rect x="68" y="40" width="6" height="42" fill="#f4f1e9"/>
+    <g fill="#0f8a4f">
+      <rect x="32" y="48" width="36" height="3"/>
+      <rect x="32" y="58" width="36" height="3"/>
+      <rect x="32" y="68" width="36" height="3"/>
+      <rect x="32" y="78" width="36" height="3"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "PRE-ILO-PH-4T",
+  "famille": "PLV",
+  "type": "presentoir de sol double face, etageres traversantes",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "acces": "recto/verso",
+  "structure": "sans dos ni cloison centrale sur la zone d'exposition, caisson plein en tete",
+  "matiere": "carton double cannelure blanc recto/verso",
+  "cannelure": "double",
+  "epaisseur_mm": 5,
+  "hors_tout_mm": { "l": 400, "p": 400, "h": 1820 },
+  "corps_mm": { "l": 400, "p": 400, "h": 1420 },
+  "socle_mm": { "l": 400, "p": 400, "h": 140 },
+  "flanc": { "retour_tranche_mm": 15, "faces": 2, "commentaire": "retour replie sur chaque tranche verticale, le fronton se pique entre les deux epaisseurs" },
+  "bandeau_haut_mm": { "l": 370, "h": 140, "faces": 2, "role": "communication + ancrage fronton" },
+  "fronton_mm": { "l": 400, "h": 395, "decoupe": "arche", "faces": 2, "construction": "double epaisseur collee dos a dos, pique dans le caisson de tete" },
+  "chargement": { "niveaux": 4, "faces": 2, "etageres": 4,
+                  "type_plateau": "traversant", "entraxe_mm": 280,
+                  "arretoir_mm": 48, "arretoirs_par_plateau": 2,
+                  "plateau_mm": { "l": 390, "p": 380 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-sol-double-face-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — PLV de sol double face, étagères traversantes</b>
+  <span>corps 40 × 40 cm · fronton 40 cm double face, aligné sur les flancs · H 182 cm · 4 plateaux traversants 39 × 38 cm, entraxe 28 cm, arrêtoir sur les deux bords · flancs à retour replié 15 mm sur chaque tranche · caisson de tête plein 37 × 14 cm double face · carton blanc double cannelure 5 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const T = 0.005;          // épaisseur double cannelure
+const W = 0.40;           // largeur hors tout du corps
+const DZ = 0.20;          // demi-profondeur
+const RET = 0.015;        // retour replié sur la tranche des flancs
+const SOCLE_H = 0.14;     // hauteur du socle
+const TOP_Y = 1.42;       // haut du corps
+const FLANC_H = TOP_Y - SOCLE_H;
+const LEVELS = [0.14, 0.42, 0.70, 0.98];
+const PLAT_D = 0.38;      // profondeur d'un plateau traversant
+const ARR_Z = PLAT_D / 2 + T / 2;
+const BAND_Y0 = 1.28;     // caisson de tête plein
+const BAND_H = TOP_Y - BAND_Y0;
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton };
+
+const plv = new THREE.Group();
+plv.name = 'presentoir_sol_double_face_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+const FACES = [['recto', 1], ['verso', -1]];
+
+/* ---------- socle, imprimé sur les deux faces ---------- */
+plv.add(mesh('car_socle_caisse', box(W, SOCLE_H, 2 * DZ), mat.kraft, [0, SOCLE_H / 2, 0]));
+FACES.forEach(([face, s]) => {
+  plv.add(mesh('imp_socle_face_' + face, box(W, SOCLE_H, 0.0015), mat.blanc, [0, SOCLE_H / 2, s * (DZ + 0.0008)]));
+  plv.add(mesh('imp_socle_bandeau_' + face, box(W, 0.036, 0.0015), mat.vert, [0, 0.018, s * (DZ + 0.0018)]));
+});
+
+/* ---------- flancs porteurs, retour replié 15 mm sur chaque tranche ---------- */
+[['droit', 1], ['gauche', -1]].forEach(([cote, sx]) => {
+  plv.add(mesh('car_flanc_' + cote, box(T, FLANC_H, 2 * DZ), mat.kraft,
+    [sx * (W / 2 - T / 2), SOCLE_H + FLANC_H / 2, 0]));
+  FACES.forEach(([face, s]) => {
+    plv.add(mesh('car_flanc_' + cote + '_retour_' + face, box(RET, FLANC_H, T), mat.blanc,
+      [sx * (W / 2 - RET / 2), SOCLE_H + FLANC_H / 2, s * (DZ - T / 2)]));
+  });
+});
+
+/* ---------- caisson de tête plein : ancrage du fronton + surface de communication ---------- */
+plv.add(mesh('car_traverse_haute', box(W - 2 * T, T, 2 * DZ - 2 * T), mat.kraft, [0, TOP_Y - T / 2, 0]));
+FACES.forEach(([face, s]) => {
+  plv.add(mesh('car_bandeau_haut_' + face, box(W - 2 * RET, BAND_H, T), mat.kraft,
+    [0, BAND_Y0 + BAND_H / 2, s * (DZ - T / 2)]));
+  plv.add(mesh('imp_bandeau_haut_face_' + face, box(W - 2 * RET, BAND_H, 0.0015), mat.blanc,
+    [0, BAND_Y0 + BAND_H / 2, s * (DZ + 0.0008)]));
+  plv.add(mesh('imp_bandeau_haut_filet_' + face, box(W - 2 * RET, 0.030, 0.0015), mat.vert,
+    [0, BAND_Y0 + 0.024, s * (DZ + 0.0018)]));
+});
+
+/* ---------- 4 plateaux traversants, arrêtoir sur les deux bords ---------- */
+LEVELS.forEach((y, i) => {
+  const n = i + 1;
+  plv.add(mesh('car_etagere_' + n + '_plateau', box(W - 2 * T, T, PLAT_D), mat.tranche, [0, y + T / 2, 0]));
+  FACES.forEach(([face, s]) => {
+    plv.add(mesh('car_etagere_' + n + '_arretoir_' + face, box(W - 2 * T, 0.048, T), mat.blanc, [0, y + T + 0.024, s * ARR_Z]));
+    plv.add(mesh('imp_etagere_' + n + '_lisere_' + face, box(W - 2 * T, 0.012, 0.0012), mat.vert, [0, y + T + 0.042, s * (ARR_Z + T / 2 + 0.0006)]));
+  });
+});
+
+/* ---------- fronton double face, piqué dans le caisson de tête ---------- */
+const F_HW = W / 2;   // fronton aligné sur les flancs
+const arche = new THREE.Shape();
+arche.moveTo(-F_HW, 0);
+arche.lineTo(F_HW, 0);
+arche.lineTo(F_HW, 0.21);
+arche.quadraticCurveTo(F_HW, 0.31, F_HW - 0.05, 0.345);
+arche.quadraticCurveTo(0, 0.445, -(F_HW - 0.05), 0.345);
+arche.quadraticCurveTo(-F_HW, 0.31, -F_HW, 0.21);
+arche.closePath();
+
+const a = 0.024, b = 0.066;
+const croix = new THREE.Shape();
+croix.moveTo(-a, -b);
+croix.lineTo(a, -b); croix.lineTo(a, -a); croix.lineTo(b, -a);
+croix.lineTo(b, a);  croix.lineTo(a, a);  croix.lineTo(a, b);
+croix.lineTo(-a, b); croix.lineTo(-a, a); croix.lineTo(-b, a);
+croix.lineTo(-b, -a); croix.lineTo(-a, -a);
+croix.closePath();
+
+const fronton = new THREE.Group();
+fronton.name = 'car_fronton';
+fronton.position.set(0, TOP_Y + 0.005, 0);
+fronton.add(mesh('car_fronton_panneau_recto', extrude(arche, T), mat.blanc, [0, 0, 0]));
+fronton.add(mesh('car_fronton_panneau_verso', extrude(arche, T), mat.blanc, [0, 0, -T]));
+[['recto', T + 0.0008, T], ['verso', -T - 0.0008, -T - 0.0015]].forEach(([face, zb, zc]) => {
+  fronton.add(mesh('imp_fronton_bandeau_' + face, box(2 * F_HW - 0.004, 0.058, 0.0015), mat.vert, [0, 0.072, zb]));
+  fronton.add(mesh('imp_fronton_croix_' + face, extrude(croix, 0.0015), mat.vert, [0, 0.235, zc]));
+});
+
+/* pattes d'encastrement : descendent dans le caisson de tête, invisibles des deux faces */
+[['droite', 0.12], ['gauche', -0.12]].forEach(([cote, x]) => {
+  fronton.add(mesh('car_fronton_patte_encastrement_' + cote, box(0.05, 0.11, T), mat.kraft, [x, -0.06, -T / 2]));
+});
+plv.add(fronton);
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

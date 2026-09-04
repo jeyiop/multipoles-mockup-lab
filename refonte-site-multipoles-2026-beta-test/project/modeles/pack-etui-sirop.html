@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Étui sirop — carton GC1, fond automatique</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  three-d-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;height:100%;background:#e8e3d9}
+  body{font-family:"Instrument Sans",system-ui,sans-serif;color:#2b2620}
+  a{color:#9c4a18}
+  a:hover{color:#7d3a12}
+  #spec{
+    position:fixed;top:28px;left:30px;z-index:5;pointer-events:none;
+    display:flex;flex-direction:column;gap:2px;
+  }
+  #spec h1{margin:0 0 8px;font-size:15px;font-weight:600;letter-spacing:.01em}
+  #spec dl{margin:0;display:grid;grid-template-columns:auto auto;gap:3px 14px;font-size:12.5px}
+  #spec dt{color:#6e675c;font-weight:400}
+  #spec dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+  #hint{margin-top:14px;max-width:210px;font-size:11.5px;line-height:1.45;color:#6e675c;letter-spacing:.01em}
+</style>
+</head>
+<body>
+<div id="spec">
+  <h1>Étui sirop 700 ml</h1>
+  <dl>
+    <dt>Support</dt><dd>Carton GC1 · 350 g/m²</dd>
+    <dt>Fond</dt><dd>Automatique (crash-lock)</dd>
+    <dt>Fermeture</dt><dd>Couvercle à languette</dd>
+    <dt>Dimensions</dt><dd>82 × 82 × 285 mm</dd>
+  </dl>
+  <p id="hint">Basculer la vue sous l'étui pour voir le croisement des rabats du fond.</p>
+</div>
+
+<three-d-stage name="etui-sirop-gc1" background="#e8e3d9"></three-d-stage>
+<script src="three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+/* ── dimensions réelles (m) ───────────────────────────── */
+const W = 0.082, D = 0.082, H = 0.285;   // largeur × profondeur × hauteur
+const t = 0.0006;                        // épaisseur carton (350 g/m² ≈ 0,45–0,6 mm)
+const bandH = 0.105;                     // hauteur de l'aplat ambre
+
+/* ── matières ─────────────────────────────────────────── */
+const M = {
+  board: new THREE.MeshStandardMaterial({ name:'carton_gc1_couche', color:0xf7f3ea, roughness:0.68, metalness:0.02 }),
+  core:  new THREE.MeshStandardMaterial({ name:'tranche_carton',    color:0xd5c9b1, roughness:0.95, metalness:0 }),
+  amber: new THREE.MeshStandardMaterial({ name:'encre_ambre',       color:0x9c4a18, roughness:0.42, metalness:0.04 }),
+  foil:  new THREE.MeshStandardMaterial({ name:'dorure',            color:0xd8b268, roughness:0.26, metalness:0.35 })
+};
+
+const etui = new THREE.Group();
+etui.name = 'etui_sirop_gc1';
+const add = (name, geo, mat, pos, rot) => {
+  const m = new THREE.Mesh(geo, mat);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0], rot[1], rot[2]);
+  etui.add(m);
+  return m;
+};
+// faces BoxGeometry : +x, -x, +y, -y, +z, -z
+const faceMats = (px, nx, py, ny, pz, nz) => [px, nx, py, ny, pz, nz];
+
+/* ── 4 panneaux, tranches de carton visibles en haut ──── */
+const wallFB = faceMats(M.core, M.core, M.core, M.core, M.board, M.board);
+const wallLR = faceMats(M.board, M.board, M.core, M.core, M.core, M.core);
+add('panneau_avant',   new THREE.BoxGeometry(W, H, t), wallFB, [0, H/2,  D/2 - t/2]);
+add('panneau_arriere', new THREE.BoxGeometry(W, H, t), wallFB, [0, H/2, -D/2 + t/2]);
+add('panneau_gauche',  new THREE.BoxGeometry(t, H, D - 2*t), wallLR, [-W/2 + t/2, H/2, 0]);
+add('panneau_droit',   new THREE.BoxGeometry(t, H, D - 2*t), wallLR, [ W/2 - t/2, H/2, 0]);
+add('patte_de_collage', new THREE.BoxGeometry(0.015, H - 0.003, t), M.board,
+    [-W/2 + t + 0.0085, H/2, -D/2 + t + t + 0.0003]);
+
+/* ── fermeture haute : couvercle + languette + rabats ─── */
+add('rabat_poussiere_gauche', new THREE.BoxGeometry(0.030, t, D - 2*t - 0.002), M.board,
+    [-W/2 + t + 0.016, H - t - t/2 - 0.0003, 0]);
+add('rabat_poussiere_droit',  new THREE.BoxGeometry(0.030, t, D - 2*t - 0.002), M.board,
+    [ W/2 - t - 0.016, H - t - t/2 - 0.0003, 0]);
+add('rabat_superieur', new THREE.BoxGeometry(W - 2*t - 0.0006, t, D - 2*t - 0.0006),
+    faceMats(M.core, M.core, M.amber, M.board, M.core, M.core), [0, H - t/2, 0]);
+add('languette_de_fermeture', new THREE.BoxGeometry(W - 2*t - 0.006, 0.020, t), M.board,
+    [0, H - t - 0.011, D/2 - 2*t - 0.0004]);
+
+/* ── fond automatique : 4 rabats croisés en diagonale ─── */
+const a = W/2 - t*1.2, kerf = 0.0009;
+const flapShape = new THREE.Shape();
+flapShape.moveTo(-a, -a + kerf);
+flapShape.lineTo(-a,  a - kerf);
+flapShape.lineTo(-kerf, 0);
+flapShape.closePath();
+const flapGeo = new THREE.ExtrudeGeometry(flapShape, { depth: t, bevelEnabled: false });
+[['fond_auto_gauche', 0], ['fond_auto_avant', Math.PI/2], ['fond_auto_droit', Math.PI], ['fond_auto_arriere', -Math.PI/2]]
+  .forEach(([name, ry]) => {
+    const pivot = new THREE.Group();
+    pivot.name = name + '_pivot';
+    pivot.rotation.y = ry;
+    const m = new THREE.Mesh(flapGeo, [M.board, M.core]);
+    m.name = name;
+    m.rotation.x = -Math.PI/2;
+    pivot.add(m);
+    etui.add(pivot);
+  });
+add('doublure_fond', new THREE.BoxGeometry(W - 2*t - 0.0012, t, D - 2*t - 0.0012),
+    faceMats(M.core, M.core, M.board, M.board, M.core, M.core), [0, t + t/2, 0]);
+
+/* ── impression : aplat ambre + filet or sur 4 faces ──── */
+const off = 0.00035, ruleY = bandH + 0.0002, ruleH = 0.005;
+[[ 'avant',   [0, bandH/2,  D/2 + off], [W, bandH, 0.0003]],
+ [ 'arriere', [0, bandH/2, -D/2 - off], [W, bandH, 0.0003]],
+ [ 'gauche',  [-W/2 - off, bandH/2, 0], [0.0003, bandH, D]],
+ [ 'droit',   [ W/2 + off, bandH/2, 0], [0.0003, bandH, D]]
+].forEach(([side, pos, size]) => {
+  add('aplat_ambre_' + side, new THREE.BoxGeometry(size[0], size[1], size[2]), M.amber, pos);
+});
+[[ 'avant',   [0, ruleY + ruleH/2,  D/2 + off + 0.0002], [W, ruleH, 0.0003]],
+ [ 'arriere', [0, ruleY + ruleH/2, -D/2 - off - 0.0002], [W, ruleH, 0.0003]],
+ [ 'gauche',  [-W/2 - off - 0.0002, ruleY + ruleH/2, 0], [0.0003, ruleH, D]],
+ [ 'droit',   [ W/2 + off + 0.0002, ruleY + ruleH/2, 0], [0.0003, ruleH, D]]
+].forEach(([side, pos, size]) => {
+  add('filet_or_' + side, new THREE.BoxGeometry(size[0], size[1], size[2]), M.foil, pos);
+});
+
+/* ── médaillon + réserve de marque, avant et arrière ──── */
+[[1, 'avant'], [-1, 'arriere']].forEach(([s, side]) => {
+  const z = s * (D/2 + off);
+  add('medaillon_or_' + side, new THREE.CylinderGeometry(0.0195, 0.0195, 0.0005, 48), M.foil,
+      [0, 0.19, z + s * 0.00025], [Math.PI/2, 0, 0]);
+  add('medaillon_centre_' + side, new THREE.CylinderGeometry(0.0134, 0.0134, 0.0004, 48), M.amber,
+      [0, 0.19, z + s * 0.0008], [Math.PI/2, 0, 0]);
+  add('reserve_marque_' + side, new THREE.BoxGeometry(0.052, 0.007, 0.0003), M.amber,
+      [0, 0.236, z]);
+});
+
+etui.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+stage.setObject(etui);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

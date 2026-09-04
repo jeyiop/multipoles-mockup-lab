@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Glorifier de comptoir pharma — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="40" y="24" width="20" height="24" fill="#f4f1e9"/>
+    <rect x="47" y="28" width="6" height="16" fill="#0f8a4f"/>
+    <rect x="40" y="32" width="20" height="4" fill="#0f8a4f"/>
+    <g fill="#f4f1e9">
+      <rect x="30" y="48" width="9" height="22"/>
+      <rect x="41" y="48" width="9" height="22"/>
+      <rect x="52" y="48" width="9" height="22"/>
+      <rect x="63" y="48" width="9" height="22"/>
+    </g>
+    <rect x="26" y="66" width="50" height="12" fill="#f4f1e9"/>
+    <rect x="26" y="69" width="50" height="5" fill="#0f8a4f"/>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "GLO-CPT-PH-4",
+  "famille": "PLV",
+  "type": "glorifier de comptoir",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "matiere": "carton compact blanc recto/verso",
+  "cannelure": "simple",
+  "epaisseur_mm": 3,
+  "hors_tout_mm": { "l": 200, "p": 127, "h": 200 },
+  "bac_mm": { "l": 200, "p": 55, "retour": 20 },
+  "fronton_mm": { "l": 200, "h": 200, "decoupe": "arche" },
+  "chevalet": { "type": "double replie colle au dos", "recul_mm": 70 },
+  "chargement": { "facings": 4, "rangs": 1, "capacite": 4,
+                  "produit": "pack sirop",
+                  "produit_mm": { "l": 44, "p": 44, "h": 110 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="glorifier-comptoir-pharma-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — glorifier de comptoir pharma, exposition de produit</b>
+  <span>bac 20 × 5,5 cm · retour 20 mm · fronton H 20 cm · 4 facings × 1 rang = 4 packs sirop · chevalet double replié, recul 7 cm · carton blanc 3 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const T = 0.003;        // épaisseur simple cannelure 3 mm
+const W = 0.20;         // largeur hors tout du bac
+const D = 0.055;        // profondeur hors tout du bac
+const REBORD = 0.020;   // hauteur du retour périphérique
+const PACK_H = 0.11;    // hauteur pack sirop
+const PACK = 0.044;     // section pack (l × p)
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const packMat = new THREE.MeshStandardMaterial({ name: 'pack_blanc_maquette', color: 0xe4e2db, roughness: 0.8, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton, pack: packMat };
+
+const plv = new THREE.Group();
+plv.name = 'glorifier_comptoir_pharma_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+
+/* ---------- bac : fond + retour 20 mm ---------- */
+plv.add(mesh('car_bac_fond', box(W, T, D), mat.tranche, [0, T / 2, 0]));
+plv.add(mesh('car_bac_retour_avant', box(W, REBORD, T), mat.blanc, [0, T + REBORD / 2, D / 2 - T / 2]));
+plv.add(mesh('car_bac_retour_droit', box(T, REBORD, D - 2 * T), mat.blanc, [W / 2 - T / 2, T + REBORD / 2, 0]));
+plv.add(mesh('car_bac_retour_gauche', box(T, REBORD, D - 2 * T), mat.blanc, [-W / 2 + T / 2, T + REBORD / 2, 0]));
+plv.add(mesh('imp_bac_retour_filet', box(W - 0.004, 0.010, 0.0012), mat.vert, [0, T + REBORD / 2, D / 2 + 0.0006]));
+
+/* ---------- chevalet double replié, collé au dos ---------- */
+const jambe = new THREE.Shape();
+jambe.moveTo(0, 0);
+jambe.lineTo(0, 0.17);
+jambe.quadraticCurveTo(0.018, 0.035, 0.070, 0.005);
+jambe.quadraticCurveTo(0.073, 0, 0.062, 0);
+jambe.closePath();
+const jambeGeo = extrude(jambe, T);
+plv.add(mesh('car_chevalet_jambe_droite', jambeGeo, mat.blanc, [0.055 - T / 2, 0, -D / 2], [0, Math.PI / 2, 0]));
+plv.add(mesh('car_chevalet_jambe_gauche', jambeGeo, mat.blanc, [-0.055 - T / 2, 0, -D / 2], [0, Math.PI / 2, 0]));
+
+
+/* ---------- dos-fronton : une seule pièce, prolongement du dos ---------- */
+const F_HW = W / 2;
+const arche = new THREE.Shape();
+arche.moveTo(-F_HW, 0);
+arche.lineTo(F_HW, 0);
+arche.lineTo(F_HW, 0.11);
+arche.quadraticCurveTo(F_HW, 0.152, F_HW - 0.028, 0.168);
+arche.quadraticCurveTo(0, 0.226, -(F_HW - 0.028), 0.168);
+arche.quadraticCurveTo(-F_HW, 0.152, -F_HW, 0.11);
+arche.closePath();
+const archeGeo = extrude(arche, T);
+
+const fronton = new THREE.Group();
+fronton.name = 'car_dos_fronton';
+fronton.position.set(0, T, -D / 2);
+fronton.add(mesh('car_dos_fronton_panneau', archeGeo, mat.blanc, [0, 0, T]));
+fronton.add(mesh('car_dos_fronton_doublage', archeGeo, mat.kraft, [0, 0, 0]));
+fronton.add(mesh('imp_fronton_bandeau', box(W - 0.004, 0.020, 0.0015), mat.vert, [0, 0.122, 2 * T + 0.0008]));
+
+const a = 0.010, b = 0.026;
+const croix = new THREE.Shape();
+croix.moveTo(-a, -b);
+croix.lineTo(a, -b); croix.lineTo(a, -a); croix.lineTo(b, -a);
+croix.lineTo(b, a);  croix.lineTo(a, a);  croix.lineTo(a, b);
+croix.lineTo(-a, b); croix.lineTo(-a, a); croix.lineTo(-b, a);
+croix.lineTo(-b, -a); croix.lineTo(-a, -a);
+croix.closePath();
+fronton.add(mesh('imp_fronton_croix', extrude(croix, 0.0015), mat.vert, [0, 0.162, 2 * T]));
+
+/* pattes de collage retour latéral / fronton */
+const patte = box(T, REBORD, 0.022);
+fronton.add(mesh('car_patte_collage_droite', patte, mat.kraft, [W / 2 - 1.5 * T, REBORD / 2, 2 * T + 0.011]));
+fronton.add(mesh('car_patte_collage_gauche', patte, mat.kraft, [-W / 2 + 1.5 * T, REBORD / 2, 2 * T + 0.011]));
+plv.add(fronton);
+
+/* ---------- 4 facings × 1 rang = 4 packs sirop ---------- */
+const packGeo = box(PACK, PACK_H, PACK);
+const etiqGeo = box(0.034, 0.052, 0.0012);
+const colW = (W - 2 * T) / 4;
+
+for (let c = 0; c < 4; c++) {
+  const x = -W / 2 + T + colW * (c + 0.5);
+  const id = 'prd_sirop_c' + (c + 1);
+  const g = new THREE.Group();
+  g.name = id;
+  g.position.set(x, T, 0);
+  g.add(mesh(id + '_corps', packGeo, mat.pack, [0, PACK_H / 2, 0]));
+  g.add(mesh(id + '_etiquette', etiqGeo, mat.vert, [0, 0.050, PACK / 2 + 0.0006]));
+  plv.add(g);
+}
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>
