@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Héro — montage étui GC1</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/environments/RoomEnvironment.js": "https://unpkg.com/three@0.184.0/examples/jsm/environments/RoomEnvironment.js",
+    "three/addons/lines/LineSegments2.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineSegments2.js",
+    "three/addons/lines/LineSegmentsGeometry.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineSegmentsGeometry.js",
+    "three/addons/lines/LineMaterial.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineMaterial.js"
+  }
+}
+</script>
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  #wrap{position:absolute;inset:0}
+  #wrap canvas{display:block}
+</style>
+</head>
+<body>
+<div id="wrap"></div>
+<script type="module">
+const THREE = await import('three');
+const wrap = document.getElementById('wrap');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2.5));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.97;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+wrap.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 60);
+try {
+  const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.72;
+} catch (e) { scene.add(new THREE.AmbientLight(0xffffff, 1.0)); }
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc8b8, 0.3));
+const sun = new THREE.DirectionalLight(0xffffff, 1.15);
+sun.position.set(2.6, 4.2, 1.8);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -3.4; sun.shadow.camera.right = 3.4;
+sun.shadow.camera.top = 3.4; sun.shadow.camera.bottom = -3.4;
+sun.shadow.radius = 9; sun.shadow.bias = -0.0002;
+scene.add(sun);
+const rim = new THREE.DirectionalLight(0xfff4e2, 0.55); rim.position.set(-3.2, 1.1, -2.4); scene.add(rim);
+const fill = new THREE.DirectionalLight(0xe8eef7, 0.3); fill.position.set(-1.4, 0.7, 3.2); scene.add(fill);
+
+const PAPER = new THREE.Color('#F6F3EC');
+const PAPER_EDGE = new THREE.Color('#E4DECF');
+const INNER_END = new THREE.Color('#EDE8DC');
+let outerCol = new THREE.Color('#F6F3EC'); // l'étui GC1 reste blanc par défaut
+const matOuter = new THREE.MeshPhysicalMaterial({ color: PAPER.clone(), roughness: 0.6, metalness: 0, sheen: 0.25, sheenRoughness: 0.9 });
+const matInner = new THREE.MeshPhysicalMaterial({ color: PAPER.clone(), roughness: 0.92, metalness: 0 });
+const matEdge = new THREE.MeshStandardMaterial({ color: PAPER_EDGE.clone(), roughness: 0.85, metalness: 0 });
+matOuter.name = 'exterieur'; matInner.name = 'interieur'; matEdge.name = 'tranche';
+const { LineSegments2 } = await import('three/addons/lines/LineSegments2.js');
+const { LineSegmentsGeometry } = await import('three/addons/lines/LineSegmentsGeometry.js');
+const { LineMaterial } = await import('three/addons/lines/LineMaterial.js');
+const lineInk = new LineMaterial({ color: 0x3d434f, linewidth: 1.3, transparent: true, worldUnits: false });
+const lineBlue = new LineMaterial({ color: 0x5B8DD6, linewidth: 1.1, transparent: true, worldUnits: false, dashed: true, dashSize: 0.06, gapSize: 0.04 });
+
+/* Étui GC1 82×82×285 -> unités scène */
+const W = 0.82, D = 0.82, H = 2.85, T = 0.018, PATTE = 0.15;
+const FD = 0.34;           // rabats de poussière
+const TUCK = 0.2;          // languette
+const LY = T / 2 + 0.0015;
+function edgePts(w, d, side) {
+  const x = w / 2, z = d / 2;
+  if (side === 'n') return [[-x, LY, -z], [x, LY, -z]];
+  if (side === 's') return [[-x, LY, z], [x, LY, z]];
+  if (side === 'w') return [[-x, LY, -z], [-x, LY, z]];
+  return [[x, LY, -z], [x, LY, z]];
+}
+function makePanel(w, d, hinges, name) {
+  const g = new THREE.Group();
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, T, d), [matEdge, matEdge, matInner, matOuter, matEdge, matEdge]);
+  mesh.castShadow = true; mesh.name = name;
+  g.add(mesh);
+  const solid = [], dash = [];
+  for (const s of ['n', 's', 'w', 'e']) (hinges.includes(s) ? dash : solid).push(...edgePts(w, d, s).flat());
+  for (const [arr, mat] of [[solid, lineInk], [dash, lineBlue]]) {
+    if (!arr.length) continue;
+    const geo = new LineSegmentsGeometry(); geo.setPositions(arr);
+    const ls = new LineSegments2(geo, mat); ls.computeLineDistances(); g.add(ls);
+  }
+  return g;
+}
+function flap(parent, name, w, fd, px, pz, dirZ) {
+  // rabat plein articulé sur une ligne z = pz, s'étend vers dirZ
+  const piv = new THREE.Group(); piv.name = name; piv.position.set(px, 0, pz); parent.add(piv);
+  const geo = new THREE.BoxGeometry(w, T, fd); geo.translate(0, 0, dirZ * fd / 2);
+  const m = new THREE.Mesh(geo, [matEdge, matEdge, matInner, matOuter, matEdge, matEdge]);
+  m.castShadow = true; m.name = name + '_mesh'; piv.add(m);
+  return piv;
+}
+
+/* Chaîne du patron : arrière (au sol) -> gauche -> avant -> droit -> patte, pliages verticaux */
+const spinner = new THREE.Group(); scene.add(spinner);
+spinner.position.set(0, 0, H / 2);
+const stand = new THREE.Group(); spinner.add(stand);
+const root = new THREE.Group(); root.position.set(0, 0, -H / 2); stand.add(root);
+
+root.add(makePanel(W, H, ['w', 'n', 's'], 'panneau_arriere'));
+const gPiv = new THREE.Group(); gPiv.position.set(-W / 2, 0, 0); root.add(gPiv);
+const gauche = makePanel(D, H, ['w', 'e', 'n', 's'], 'panneau_gauche'); gauche.position.x = -D / 2; gPiv.add(gauche);
+const aPiv = new THREE.Group(); aPiv.position.set(-D, 0, 0); gPiv.add(aPiv);
+const avant = makePanel(W, H, ['w', 'e'], 'panneau_avant'); avant.position.x = -W / 2; aPiv.add(avant);
+const dPiv = new THREE.Group(); dPiv.position.set(-W, 0, 0); aPiv.add(dPiv);
+const droit = makePanel(D, H, ['w', 'e', 'n', 's'], 'panneau_droit'); droit.position.x = -D / 2; dPiv.add(droit);
+const pPiv = new THREE.Group(); pPiv.position.set(-D, 0, 0); dPiv.add(pPiv);
+const patte = makePanel(PATTE, H, ['e'], 'patte_collage'); patte.position.x = -PATTE / 2; pPiv.add(patte);
+
+/* Fermetures : rabats de poussière sur gauche/droit, panneau + languette sur l'arrière, aux deux bouts */
+const dustN = [flap(gauche, 'poussiere_g_n', D - 2 * T, FD, 0, -H / 2, -1), flap(droit, 'poussiere_d_n', D - 2 * T, FD, 0, -H / 2, -1)];
+const dustS = [flap(gauche, 'poussiere_g_s', D - 2 * T, FD, 0, H / 2, 1), flap(droit, 'poussiere_d_s', D - 2 * T, FD, 0, H / 2, 1)];
+const cloN = flap(root, 'fermeture_n', W - 2 * T, D - T, 0, -H / 2, -1);
+const cloS = flap(root, 'fermeture_s', W - 2 * T, D - T, 0, H / 2, 1);
+const tuckN = flap(cloN, 'languette_n', W - 2 * T - 0.06, TUCK, 0, -(D - T), -1);
+const tuckS = flap(cloS, 'languette_s', W - 2 * T - 0.06, TUCK, 0, D - T, 1);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), new THREE.ShadowMaterial({ opacity: 0 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -T / 2 - 0.002;
+ground.receiveShadow = true; scene.add(ground);
+const contactTex = (() => {
+  const px = 256, c = document.createElement('canvas'); c.width = c.height = px;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, px / 2);
+  grd.addColorStop(0, 'rgba(0,0,0,0.5)'); grd.addColorStop(0.45, 'rgba(0,0,0,0.22)');
+  grd.addColorStop(0.75, 'rgba(0,0,0,0.06)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, px, px);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const contact = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, opacity: 0, depthWrite: false }));
+contact.rotation.x = -Math.PI / 2; contact.position.y = -T / 2 + 0.0012; contact.renderOrder = -1;
+scene.add(contact);
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const smooth = t => t * t * (3 - 2 * t);
+const seg = (p, a, b) => smooth(clamp((p - a) / (b - a), 0, 1));
+const CAM_A = new THREE.Vector3(0.05, 5.45, 0.07), CAM_B = new THREE.Vector3(3.1, 1.92, 3.7);
+const DIR_A = CAM_A.clone().normalize(), DIR_B = CAM_B.clone().normalize();
+const camDir = new THREE.Vector3(), camPos = new THREE.Vector3(), camTgt = new THREE.Vector3();
+const fitBox = new THREE.Box3(), fitSphere = new THREE.Sphere();
+const TGT_B = new THREE.Vector3(0, 0.3, 0);
+let pT = 0, p = 0, thT = 0, th = 0;
+const cfg = { autorotate: true };
+const standalone = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+window.addEventListener('message', ev => {
+  const d = ev.data || {};
+  if (d.mp === 'fold') pT = clamp(+d.p || 0, 0, 1);
+  else if (d.mp === 'drag') thT += (+d.dx || 0) * 0.0052;
+  else if (d.mp === 'cfg') {
+    if (d.ink) lineInk.color.set(d.ink);
+    if (d.crease) lineBlue.color.set(d.crease);
+    if (typeof d.autorotate === 'boolean') cfg.autorotate = d.autorotate;
+  }
+});
+function resize() {
+  const w = wrap.clientWidth || 2, h = wrap.clientHeight || 2;
+  renderer.setSize(w, h, false);
+  const pr = renderer.getPixelRatio();
+  lineInk.resolution.set(w * pr, h * pr);
+  lineBlue.resolution.set(w * pr, h * pr);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(wrap);
+resize();
+
+const t0 = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (standalone) pT = 0.5 - 0.5 * Math.cos((now - t0) * 0.00028);
+  p += (pT - p) * 0.11;
+  if (cfg.autorotate && p > 0.96) thT += 0.0011;
+  th += (thT - th) * 0.1;
+
+  const wrapK = seg(p, 0.04, 0.4) * Math.PI / 2;
+  gPiv.rotation.z = -wrapK; aPiv.rotation.z = -wrapK; dPiv.rotation.z = -wrapK; pPiv.rotation.z = -wrapK;
+  const dust = seg(p, 0.42, 0.6) * Math.PI / 2;
+  dustN.forEach(f => f.rotation.x = dust); dustS.forEach(f => f.rotation.x = -dust);
+  const clo = seg(p, 0.56, 0.76) * Math.PI / 2;
+  cloN.rotation.x = clo; cloS.rotation.x = -clo;
+  const tuk = seg(p, 0.72, 0.86) * Math.PI / 2;
+  tuckN.rotation.x = tuk; tuckS.rotation.x = -tuk;
+  stand.rotation.x = seg(p, 0.86, 0.99) * Math.PI / 2;
+  spinner.rotation.y = th;
+
+  const lo = 1 - seg(p, 0.5, 0.85);
+  lineInk.opacity = 0.75 * lo; lineBlue.opacity = lo;
+  matInner.color.lerpColors(PAPER, INNER_END, seg(p, 0.4, 0.8));
+  ground.material.opacity = 0.05 + 0.13 * seg(p, 0.3, 0.85);
+
+  spinner.updateWorldMatrix(true, true);
+  fitBox.setFromObject(spinner);
+  fitBox.getBoundingSphere(fitSphere);
+  contact.scale.set((fitBox.max.x - fitBox.min.x) * 1.25, (fitBox.max.z - fitBox.min.z) * 1.25, 1);
+  contact.position.x = (fitBox.max.x + fitBox.min.x) / 2;
+  contact.position.z = (fitBox.max.z + fitBox.min.z) / 2;
+  contact.material.opacity = 0.28 + 0.5 * seg(p, 0.15, 0.9);
+  const pc = smooth(p);
+  camDir.copy(DIR_A).lerp(DIR_B, pc).normalize();
+  const vFov = camera.fov * Math.PI / 180;
+  const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+  const fit = Math.min(Math.sin(vFov / 2), Math.sin(hFov / 2));
+  const dist = fitSphere.radius / Math.max(0.05, fit) * 1.06;
+  camTgt.copy(fitSphere.center).lerp(TGT_B, 0.1 * pc);
+  camPos.copy(camTgt).addScaledVector(camDir, dist);
+  camera.position.copy(camPos);
+  camera.lookAt(camTgt);
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(frame);
+try { window.parent.postMessage({ mp: 'ready' }, '*'); } catch (e) {}
+</script>
+</body>
+</html>

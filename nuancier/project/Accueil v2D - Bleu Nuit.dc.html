@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background-color:#0B1526;color:#EDF2F9;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;
+background-image:linear-gradient(rgba(214,226,240,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(214,226,240,.06) 1px,transparent 1px),linear-gradient(rgba(214,226,240,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(214,226,240,.022) 1px,transparent 1px);
+background-size:96px 96px,96px 96px,12px 12px,12px 12px}
+a{color:#33465F;text-decoration:none}
+a:hover{color:#5B8DD6}
+::selection{background:#F2762E;color:#0B1526}
+input,button{font-family:inherit}
+input::placeholder{color:#5E5F66}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+</style>
+<script src="image-slot.js"></script>
+</helmet>
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,21,38,.85);backdrop-filter:blur(10px);border-bottom:1px solid #1E2F4A">
+  <div style="max-width:1440px;margin:0 auto;padding:0 36px;height:66px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+    <a href="#" style="display:flex;align-items:center;gap:11px">
+      <span style="width:9px;height:9px;background:#5B8DD6;display:block"></span>
+      <span style="font-weight:800;font-stretch:118%;font-size:19px;letter-spacing:.01em">MULTI-PÔLES</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#8FA3BD;padding-left:6px">CARTON · PLV · PACKAGING</span>
+    </a>
+    <nav style="display:flex;align-items:center;gap:30px">
+      <a href="#galerie" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;font-weight:500">RÉALISATIONS</a>
+      <a href="#industrie" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;font-weight:500">LE GROUPE</a>
+      <a href="#devis" style="background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.12em;padding:13px 20px" style-hover="background:#3E6DB0">CHIFFRER UN PROJET</a>
+    </nav>
+  </div>
+</header>
+
+<section id="hero" data-screen-label="Héro — pliage 3D" ref="{{ trackRef }}" style="height:290vh;position:relative">
+  <div style="position:sticky;top:0;height:100vh;overflow:hidden">
+    <iframe src="{{ heroSrc }}" title="Maquette 3D du héro" ref="{{ frameRef }}" onLoad="{{ onFrameLoad }}" style="position:absolute;top:0;left:26%;width:74%;height:100%;border:0;pointer-events:none;z-index:1"></iframe>
+    <div onPointerDown="{{ dragDown }}" onPointerMove="{{ dragMove }}" onPointerUp="{{ dragUp }}" style="position:absolute;left:40%;right:0;top:12%;bottom:10%;z-index:3;cursor:grab;touch-action:pan-y"></div>
+    <div style="position:absolute;left:clamp(24px,4vw,72px);top:18vh;z-index:4;max-width:640px;pointer-events:none;animation:fadeUp .9s ease both">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:#5B8DD6">01 — BUREAU D'ÉTUDES &amp; PRODUCTION CARTON</div>
+      <h1 style="margin:22px 0 0;font-weight:800;font-stretch:118%;font-size:clamp(42px,4.6vw,76px);line-height:.98;letter-spacing:-.022em;text-wrap:balance">L'ingénierie du carton. Du plan technique au <span style="box-shadow:inset 0 -4px 0 0 #5B8DD6">volume d'exception.</span></h1>
+      <p style="margin:26px 0 0;font-size:18px;line-height:1.55;color:#8FA3BD;max-width:44ch">Conception sur-mesure et production industrielle. 6&nbsp;usines certifiées Éco&nbsp;&amp;&nbsp;Pharma.</p>
+      <div style="margin-top:34px;display:flex;gap:14px;pointer-events:auto">
+        <a href="#devis" style="background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.13em;padding:16px 24px" style-hover="background:#3E6DB0">CHIFFRER UN PROJET</a>
+        <a href="#galerie" style="border:1px solid #33465F;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.13em;padding:15px 24px" style-hover="border-color:#5B8DD6">VOIR LES VOLUMES ↓</a>
+      </div>
+    </div>
+    <div style="position:absolute;right:44px;bottom:44px;z-index:4;pointer-events:none;border:1px solid #33465F;background:rgba(11,21,38,.9);min-width:270px">
+      <div style="display:grid;grid-template-columns:92px 1fr;border-bottom:1px solid #1E2F4A">
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#8FA3BD;border-right:1px solid #1E2F4A">PROJET</div>
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;font-weight:700">COFFRET RIGIDE</div>
+      </div>
+      <div style="display:grid;grid-template-columns:92px 1fr;border-bottom:1px solid #1E2F4A">
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#8FA3BD;border-right:1px solid #1E2F4A">MATIÈRE</div>
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em">CARTON COMPACT 2,4 MM</div>
+      </div>
+      <div style="display:grid;grid-template-columns:92px 1fr;border-bottom:1px solid #1E2F4A">
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#8FA3BD;border-right:1px solid #1E2F4A">FORMAT</div>
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em">160 × 110 × 55 MM</div>
+      </div>
+      <sc-if value="{{ heroIsFold }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:92px 1fr">
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#8FA3BD;border-right:1px solid #1E2F4A">PLIAGE</div>
+        <div style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#5B8DD6;font-weight:700"><span ref="{{ pctRef }}">000 %</span></div>
+      </div>
+      </sc-if>
+    </div>
+    <sc-if value="{{ heroIsFold }}" hint-placeholder-val="{{ true }}">
+    <div ref="{{ hintRef }}" style="position:absolute;left:clamp(24px,4vw,72px);bottom:44px;z-index:4;pointer-events:none;display:flex;flex-direction:column;gap:10px;transition:opacity .4s;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#8FA3BD">
+      <span>▾ FAITES DÉFILER — LE TRACÉ SE PLIE</span>
+      <span style="display:block;width:150px;height:2px;background:#1E2F4A"><span ref="{{ barRef }}" style="display:block;width:0%;height:2px;background:#5B8DD6"></span></span>
+    </div>
+    </sc-if>
+  </div>
+</section>
+
+<section id="galerie" data-screen-label="Galerie des volumes" style="max-width:1280px;margin:0 auto;padding:150px 36px 130px">
+  <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;margin-bottom:60px">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:#5B8DD6">02 — GALERIE DES VOLUMES</div>
+      <h2 style="margin:18px 0 0;font-weight:700;font-stretch:112%;font-size:clamp(32px,3.2vw,52px);letter-spacing:-.015em;line-height:1.02">L'art du pliage et de la structure</h2>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#8FA3BD;text-align:right;line-height:1.9">MATIÈRE : 100 % CARTON<br>PHOTOS STUDIO — LUMIÈRE DOUCE</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:26px">
+    <figure style="margin:0;grid-column:1 / span 6">
+      <div style="{{ figStyle }}" onWheel="{{ wheelFig1 }}">
+        <iframe ref="{{ figRef1 }}" src="{{ fig1Src }}" tabindex="-1" title="Packaging — maquette 3D" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none"></iframe>
+        <a href="#devis" style="position:absolute;left:14px;bottom:14px;background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;padding:12px 18px" style-hover="background:#3E6DB0">FAIRE SON DEVIS →</a>
+      </div>
+      <div style="{{ figCtlStyle1 }}">
+        <button type="button" onClick="{{ prevFig1 }}" aria-label="Modèle précédent" style="background:transparent;border:1px solid #2A3D5C;color:#B4C5DC;width:24px;height:24px;cursor:pointer;font-size:13px;line-height:1;padding:0">‹</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:#EDF2F9;min-width:96px;text-align:center">{{ fig1Label }}</span>
+        <button type="button" onClick="{{ nextFig1 }}" aria-label="Modèle suivant" style="background:transparent;border:1px solid #2A3D5C;color:#B4C5DC;width:24px;height:24px;cursor:pointer;font-size:13px;line-height:1;padding:0">›</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#7E93B0">TAILLE OBJET</span>
+        <input type="range" min="0.4" max="1.8" step="0.01" value="{{ figK1 }}" onChange="{{ setFigK1 }}" style="flex:1;accent-color:#5B8DD6">
+        <label style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#B4C5DC;cursor:pointer;opacity:1"><input type="checkbox" checked="{{ figFixed1 }}" onChange="{{ toggleFigFixed1 }}" style="accent-color:#F2762E">FIXER</label>
+      </div>
+      <figcaption style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#8FA3BD">FIG. 01 — PACK PHARMA 3D · ÉTUI GC1 BLANC, MAQUETTE INTERACTIVE</figcaption>
+    </figure>
+    <figure style="margin:0;grid-column:7 / span 6">
+      <div style="{{ figStyle }}" onWheel="{{ wheelFig2 }}">
+        <iframe ref="{{ figRef2 }}" src="{{ fig2Src }}" tabindex="-1" title="PLV — maquette 3D" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none"></iframe>
+        <a href="#devis" style="position:absolute;left:14px;bottom:14px;background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;padding:12px 18px" style-hover="background:#3E6DB0">FAIRE SON DEVIS →</a>
+      </div>
+      <div style="{{ figCtlStyle2 }}">
+        <button type="button" onClick="{{ prevFig2 }}" aria-label="Modèle précédent" style="background:transparent;border:1px solid #2A3D5C;color:#B4C5DC;width:24px;height:24px;cursor:pointer;font-size:13px;line-height:1;padding:0">‹</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:#EDF2F9;min-width:96px;text-align:center">{{ fig2Label }}</span>
+        <button type="button" onClick="{{ nextFig2 }}" aria-label="Modèle suivant" style="background:transparent;border:1px solid #2A3D5C;color:#B4C5DC;width:24px;height:24px;cursor:pointer;font-size:13px;line-height:1;padding:0">›</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#7E93B0">TAILLE OBJET</span>
+        <input type="range" min="0.4" max="1.8" step="0.01" value="{{ figK2 }}" onChange="{{ setFigK2 }}" style="flex:1;accent-color:#5B8DD6">
+        <label style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#B4C5DC;cursor:pointer;opacity:1"><input type="checkbox" checked="{{ figFixed2 }}" onChange="{{ toggleFigFixed2 }}" style="accent-color:#F2762E">FIXER</label>
+      </div>
+      <figcaption style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#8FA3BD">FIG. 02 — PLV DE SOL 3D · 4 ÉTAGÈRES + FRONTON, MAQUETTE INTERACTIVE</figcaption>
+    </figure>
+    <figure style="margin:26px 0 0;grid-column:1 / span 6">
+      <div style="{{ figStyle }}" onWheel="{{ wheelFig3 }}">
+        <iframe ref="{{ figRef3 }}" src="modeles/pack-coffret-rabat.html?bg=101D33" tabindex="-1" title="Coffret à rabat — maquette 3D" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none"></iframe>
+        <a href="#devis" style="position:absolute;left:14px;bottom:14px;background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;padding:12px 18px" style-hover="background:#3E6DB0">FAIRE SON DEVIS →</a>
+      </div>
+      <div style="{{ figCtlStyle3 }}">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#7E93B0">TAILLE OBJET</span>
+        <input type="range" min="0.4" max="1.8" step="0.01" value="{{ figK3 }}" onChange="{{ setFigK3 }}" style="flex:1;accent-color:#5B8DD6">
+        <label style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#B4C5DC;cursor:pointer;opacity:1"><input type="checkbox" checked="{{ figFixed3 }}" onChange="{{ toggleFigFixed3 }}" style="accent-color:#F2762E">FIXER</label>
+      </div>
+      <figcaption style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#8FA3BD">FIG. 03 — PACK &amp; COFFRET · COFFRET À RABAT, MAQUETTE INTERACTIVE</figcaption>
+    </figure>
+    <figure style="margin:26px 0 0;grid-column:7 / span 6">
+      <div style="{{ figStyle }}" onWheel="{{ wheelFig4 }}">
+        <iframe ref="{{ figRef4 }}" src="modeles/notice-accordeon.html?bg=101D33" tabindex="-1" title="Notice pharma accordéon — pliage interactif" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none"></iframe>
+        <a href="#devis" style="position:absolute;right:14px;bottom:14px;background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;padding:12px 18px" style-hover="background:#3E6DB0">FAIRE SON DEVIS →</a>
+      </div>
+      <div style="{{ figCtlStyle4 }}">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#7E93B0">TAILLE OBJET</span>
+        <input type="range" min="0.4" max="1.8" step="0.01" value="{{ figK4 }}" onChange="{{ setFigK4 }}" style="flex:1;accent-color:#5B8DD6">
+        <label style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#B4C5DC;cursor:pointer;opacity:1"><input type="checkbox" checked="{{ figFixed4 }}" onChange="{{ toggleFigFixed4 }}" style="accent-color:#F2762E">FIXER</label>
+      </div>
+      <figcaption style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:#8FA3BD">FIG. 04 — NOTICE PHARMA · PLIAGE ACCORDÉON, RÉGLEZ LES VOLETS</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="atelier" data-screen-label="Atelier numérique" style="display:none">
+  <div>
+    <div>
+      <div style="border:1px solid #33465F;background:#FFFFFF;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #33465F;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em">
+          <span style="font-weight:700">MP·TRACÉ — GÉNÉRATEUR DE DIELINES</span>
+          <span style="color:#8FA3BD">V4.2 — CONNECTÉ</span>
+        </div>
+        <div style="display:flex;gap:22px;padding:8px 16px;border-bottom:1px solid #1E2F4A;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8FA3BD;letter-spacing:.08em">
+          <span>FICHIER</span><span>ÉDITION</span><span>AFFICHAGE</span><span>COTATION</span><span>EXPORT</span>
+        </div>
+        <div style="display:flex;flex:1;min-height:390px">
+          <div style="width:190px;border-right:1px solid #1E2F4A;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div>
+              <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;margin-bottom:5px">MODÈLE</span>
+              <div style="border:1px solid #1E2F4A;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">COFFRET RIGIDE</div>
+            </div>
+            <div>
+              <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;margin-bottom:5px">LONGUEUR</span>
+              <div style="border:1px solid #1E2F4A;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">160 MM</div>
+            </div>
+            <div>
+              <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;margin-bottom:5px">LARGEUR</span>
+              <div style="border:1px solid #1E2F4A;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">110 MM</div>
+            </div>
+            <div>
+              <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;margin-bottom:5px">HAUTEUR</span>
+              <div style="border:1px solid #1E2F4A;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">55 MM</div>
+            </div>
+            <div>
+              <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;margin-bottom:5px">CARTON</span>
+              <div style="border:1px solid #1E2F4A;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">COMPACT 2,4 MM</div>
+            </div>
+            <div style="margin-top:auto;background:#F2762E;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-align:center;padding:11px 0">GÉNÉRER LE TRACÉ</div>
+          </div>
+          <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background-image:linear-gradient(rgba(36,66,200,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(36,66,200,.07) 1px,transparent 1px);background-size:14px 14px">
+            <svg viewBox="-10 -34 490 476" style="width:74%;height:auto" fill="none">
+              <path d="M95,213 L95,323 L150,323 L150,378 L310,378 L310,323 L365,323 L365,213 L310,213 L310,10 L150,10 L150,213 Z" stroke="#33465F" stroke-width="1.6"></path>
+              <g stroke="#5B8DD6" stroke-width="1.1" stroke-dasharray="6 4">
+                <line x1="150" y1="46" x2="310" y2="46"></line>
+                <line x1="150" y1="158" x2="310" y2="158"></line>
+                <line x1="150" y1="213" x2="310" y2="213"></line>
+                <line x1="150" y1="323" x2="310" y2="323"></line>
+                <line x1="150" y1="213" x2="150" y2="323"></line>
+                <line x1="310" y1="213" x2="310" y2="323"></line>
+              </g>
+              <g stroke="#8A8B92" stroke-width=".9">
+                <line x1="150" y1="-16" x2="310" y2="-16"></line>
+                <line x1="146" y1="-12" x2="154" y2="-20"></line>
+                <line x1="306" y1="-12" x2="314" y2="-20"></line>
+                <line x1="384" y1="213" x2="384" y2="323"></line>
+                <line x1="380" y1="217" x2="388" y2="209"></line>
+                <line x1="380" y1="327" x2="388" y2="319"></line>
+                <line x1="322" y1="323" x2="322" y2="378"></line>
+                <line x1="318" y1="327" x2="326" y2="319"></line>
+                <line x1="318" y1="382" x2="326" y2="374"></line>
+              </g>
+              <g fill="#8FA3BD" style="font-family:'JetBrains Mono',monospace;font-size:11px">
+                <text x="219" y="-24">160</text>
+                <text x="392" y="272">110</text>
+                <text x="330" y="354">55</text>
+              </g>
+              <g fill="#B9B3A4" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em" text-anchor="middle">
+                <text x="230" y="272">FOND</text>
+                <text x="230" y="354">AVANT</text>
+                <text x="230" y="190">ARRIÈRE</text>
+                <text x="230" y="100">COUVERCLE</text>
+                <text x="230" y="32">RABAT</text>
+                <text x="122" y="272">CÔTÉ</text>
+                <text x="338" y="272">CÔTÉ</text>
+              </g>
+              <text x="95" y="404" fill="#5B8DD6" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em">RÉF. MP-COFFRET-160 — ÉCH 1:1</text>
+            </svg>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid #1E2F4A;padding:7px 16px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#8FA3BD">
+          <span>ZONE 460 × 420 MM</span>
+          <span>6 PANNEAUX — TRACÉ CONFORME</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:26px">
+        <a href="#devis" style="flex:1;display:flex;flex-direction:column;border:1px solid #33465F;background:#EDF2F9;padding:30px" style-hover="background:#FFFFFF">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;color:#5B8DD6">OUTIL 01</span>
+          <span style="font-size:23px;font-weight:700;font-stretch:110%;margin:12px 0 10px;display:block">Générateur de tracés</span>
+          <span style="font-size:15px;line-height:1.6;color:#8FA3BD;flex:1;display:block">Accédez à notre bibliothèque de dielines paramétriques pour démarrer votre projet avec les bonnes cotes.</span>
+          <span style="margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#5B8DD6;display:block">OUVRIR L'OUTIL →</span>
+        </a>
+        <a href="#devis" style="flex:1;display:flex;flex-direction:column;border:1px solid #33465F;background:#EDF2F9;padding:30px" style-hover="background:#FFFFFF">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;color:#5B8DD6">OUTIL 02</span>
+          <span style="font-size:23px;font-weight:700;font-stretch:110%;margin:12px 0 10px;display:block">Studio 3D</span>
+          <span style="font-size:15px;line-height:1.6;color:#8FA3BD;flex:1;display:block">Importez vos décors et validez vos volumes en temps réel avant le lancement en production.</span>
+          <span style="margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#5B8DD6;display:block">OUVRIR L'OUTIL →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="industrie" data-screen-label="Force industrielle" style="max-width:1280px;margin:0 auto;padding:150px 36px 110px">
+  <div style="display:grid;grid-template-columns:5fr 6fr;gap:64px;align-items:center">
+    <div style="position:relative">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#8FA3BD;margin-bottom:14px">IMPLANTATIONS — FRANCE MÉTROPOLITAINE</div>
+      <iframe src="france-map.html" title="Carte des 6 sites de production en France" style="width:100%;aspect-ratio:14/15;border:0;pointer-events:none;display:block"></iframe>
+    </div>
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:#5B8DD6">04 — LA FORCE INDUSTRIELLE</div>
+      <h2 style="margin:18px 0 0;font-weight:700;font-stretch:112%;font-size:clamp(32px,3.2vw,52px);letter-spacing:-.015em;line-height:1.02">6 usines expertes. Zéro compromis sur la qualité.</h2>
+      <p style="margin:20px 0 0;font-size:17px;line-height:1.6;color:#8FA3BD;max-width:52ch">Chaque site est spécialisé dans son domaine. Ensemble, ils réunissent plus de 300 personnes et couvrent toute la chaîne du carton.</p>
+      <div style="margin-top:36px">
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">01</span>
+          <span style="font-size:16.5px;font-weight:600">Impression offset &amp; numérique</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">HAUTS-DE-FRANCE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">02</span>
+          <span style="font-size:16.5px;font-weight:600">Cartonnage &amp; contrecollage</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">NORMANDIE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">03</span>
+          <span style="font-size:16.5px;font-weight:600">Bureau d'études &amp; prototypage</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">ÎLE-DE-FRANCE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">04</span>
+          <span style="font-size:16.5px;font-weight:600">Carton ondulé &amp; PLV</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">PAYS DE LA LOIRE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">05</span>
+          <span style="font-size:16.5px;font-weight:600">Façonnage &amp; ennoblissement</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">AUVERGNE-RHÔNE-ALPES</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid #1E2F4A;border-bottom:1px solid #1E2F4A">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#5B8DD6">06</span>
+          <span style="font-size:16.5px;font-weight:600">Coffrets &amp; volumes d'exception</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#8FA3BD">NOUVELLE-AQUITAINE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:110px;border-top:1px solid #33465F;border-bottom:1px solid #33465F;padding:36px 0;display:flex;align-items:center;gap:44px;flex-wrap:wrap">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#8FA3BD;line-height:2;min-width:150px">CERTIFICATIONS<br>ÉCO &amp; PHARMA</div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap">
+      <div style="width:92px;height:92px;position:relative"><image-slot id="cert-fsc" shape="circle" fit="contain" placeholder="Logo FSC®"></image-slot></div>
+      <div style="width:92px;height:92px;position:relative"><image-slot id="cert-pefc" shape="circle" fit="contain" placeholder="Logo PEFC"></image-slot></div>
+      <div style="width:92px;height:92px;position:relative"><image-slot id="cert-imprimvert" shape="circle" fit="contain" placeholder="Logo Imprim'Vert"></image-slot></div>
+      <div style="width:92px;height:92px;position:relative"><image-slot id="cert-iso15378" shape="circle" fit="contain" placeholder="Logo ISO 15378"></image-slot></div>
+      <div style="width:92px;height:92px;position:relative"><image-slot id="cert-bpf" shape="circle" fit="contain" placeholder="Logo BPF Pharma"></image-slot></div>
+    </div>
+    <p style="margin:0;flex:1;min-width:280px;font-size:15px;line-height:1.6;color:#8FA3BD">Des tirages industriels aux notices imprimées sur papier ultra-fin, nos lignes répondent aux exigences des marchés Éco comme Pharma.</p>
+  </div>
+</section>
+
+<section id="devis" data-screen-label="Votre projet + pied de page" style="background:#0B1526;color:#EDF2F9;border-top:1px solid #1E2F4A">
+  <div style="max-width:1180px;margin:0 auto;padding:130px 36px 46px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:#9DC1EC">05 — VOTRE PROJET</div>
+    <h2 style="margin:18px 0 0;font-weight:700;font-stretch:112%;font-size:clamp(34px,3.6vw,58px);letter-spacing:-.015em;line-height:1.04;color:#EDF2F9;max-width:20ch">Vous avez un projet de packaging ou de PLV&nbsp;?</h2>
+    <p style="margin:20px 0 0;font-size:17px;line-height:1.6;color:#7E93B0;max-width:58ch">Indiquez vos dimensions ou déposez votre propre tracé : notre bureau d'études vous répond avec un chiffrage et des recommandations techniques.</p>
+    <div style="margin-top:44px;display:flex;gap:12px">
+      <button type="button" onClick="{{ setTypePackaging }}" style="{{ tabPackagingStyle }}">COFFRET / PACKAGING</button>
+      <button type="button" onClick="{{ setTypePlv }}" style="{{ tabPlvStyle }}">PLV</button>
+    </div>
+    <div style="margin-top:30px">
+      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:10px">CHOISISSEZ UN MODÈLE</span>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <sc-for list="{{ templates }}" as="tpl" hint-placeholder-count="8">
+          <button type="button" onClick="{{ tpl.select }}" style="{{ tpl.style }}" title="{{ tpl.sub }}">
+            <svg viewBox="0 0 48 48" style="width:42px;height:42px;display:block" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="{{ tpl.picto }}"></path></svg>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">{{ tpl.label }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.06em;color:#7E93B0">{{ tpl.dimsText }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="position:relative;border:1px solid #1E2F4A;background:#101D33;height:760px;margin-top:22px">
+        <iframe ref="{{ viewerRefHole }}" onLoad="{{ onViewerLoad }}" src="{{ viewerSrcBg }}" title="Visionneuse 3D du modèle sélectionné" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+        <div style="position:absolute;left:14px;bottom:12px;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#8FA3BD;background:rgba(11,21,38,.85);padding:6px 10px">MAQUETTE 3D INTERACTIVE — PIVOTEZ AVEC LA SOURIS</div>
+      </div>
+    </div>
+    <div style="margin-top:34px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px">
+      <div>
+        <span style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:10px"><span>LONGUEUR</span><span style="color:#EDF2F9">{{ lVal }} MM</span></span>
+        <input type="range" min="{{ lMin }}" max="{{ lMax }}" value="{{ lVal }}" onChange="{{ setL }}" style="width:100%;accent-color:#5B8DD6">
+      </div>
+      <div>
+        <span style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:10px"><span>LARGEUR</span><span style="color:#EDF2F9">{{ wVal }} MM</span></span>
+        <input type="range" min="{{ wMin }}" max="{{ wMax }}" value="{{ wVal }}" onChange="{{ setW }}" style="width:100%;accent-color:#5B8DD6">
+      </div>
+      <div>
+        <span style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:10px"><span>HAUTEUR</span><span style="color:#EDF2F9">{{ hVal }} MM</span></span>
+        <input type="range" min="{{ hMin }}" max="{{ hMax }}" value="{{ hVal }}" onChange="{{ setH }}" style="width:100%;accent-color:#5B8DD6">
+      </div>
+    </div>
+    <div style="margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:22px">
+      <div>
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:8px">QUANTITÉ ENVISAGÉE</span>
+        <input type="text" placeholder="{{ qtePlaceholder }}" style="width:100%;box-sizing:border-box;background:transparent;border:1px solid #2A3D5C;color:#EDF2F9;padding:13px 14px;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none">
+      </div>
+      <div>
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7E93B0;margin-bottom:8px">EMAIL PROFESSIONNEL</span>
+        <input type="email" placeholder="prenom@societe.fr" style="width:100%;box-sizing:border-box;background:transparent;border:1px solid #2A3D5C;color:#EDF2F9;padding:13px 14px;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none">
+      </div>
+      <div style="grid-column:1 / -1;display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+        <button type="button" style="background:#F2762E;border:0;color:#0B1526;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.14em;padding:17px 30px;cursor:pointer" style-hover="background:#F2762E">CHIFFRER MON PROJET — {{ activeLabel }} {{ dimsSummary }} →</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#61779A">TRANSMIS DIRECTEMENT AU BUREAU D'ÉTUDES</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid #243654;margin-top:96px;padding-top:34px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="width:8px;height:8px;background:#5B8DD6;display:block"></span>
+          <span style="font-weight:800;font-stretch:118%;font-size:16px;color:#EDF2F9">MULTI-PÔLES</span>
+        </div>
+        <div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#61779A">IMPRIMEUR · CARTONNIER · FABRICANT · VOLUMISTE</div>
+      </div>
+      <nav style="display:flex;gap:26px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em">
+        <a href="#galerie" style="color:#7E93B0" style-hover="color:#EDF2F9">RÉALISATIONS</a>
+        <a href="#industrie" style="color:#7E93B0" style-hover="color:#EDF2F9">LE GROUPE</a>
+        <a href="#devis" style="color:#7E93B0" style-hover="color:#EDF2F9">CONTACT</a>
+      </nav>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#61779A">© 2026 MULTI-PÔLES — MENTIONS LÉGALES</div>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;modeleHero&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Coffret (pliage)&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;Coffret (pliage)&quot;, &quot;Étui GC1 (montage)&quot;, &quot;Coffret à rabat (montage)&quot;, &quot;PLV de sol (montage)&quot;, &quot;Étui sirop&quot;, &quot;Coffret cloche&quot;, &quot;Boîte à cloche&quot;], &quot;section&quot;: &quot;Coffret 3D&quot;},
+  &quot;couleurCoffret&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#5C1F2B&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#5C1F2B&quot;, &quot;#123B2D&quot;, &quot;#152238&quot;, &quot;#141414&quot;], &quot;section&quot;: &quot;Coffret 3D&quot;},
+  &quot;rotationAuto&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Coffret 3D&quot;},
+  &quot;grilleTechnique&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Ambiance&quot;},
+  &quot;hauteurCadres&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 627, &quot;min&quot;: 320, &quot;max&quot;: 900, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Galerie&quot;},
+  &quot;tailleFixe&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Galerie&quot;}
+}">
+class Component extends DCLogic {
+  state = { typeDevis: 'packaging', tplPackaging: 'etui-gc1', tplPlv: 'sol-standard', dims: { l: 82, w: 82, h: 285 }, figK: [1, 1, 1, 1], figFixed: [false, false, false, false] };
+  figRefs = [React.createRef(), React.createRef(), React.createRef(), React.createRef()];
+  viewerRef = React.createRef();
+  sendDims() {
+    const isPlv = this.state.typeDevis === 'plv';
+    const list = this.templatesData[this.state.typeDevis];
+    const active = list.find(t => t.id === (isPlv ? this.state.tplPlv : this.state.tplPackaging)) || list[0];
+    const d = this.state.dims;
+    const el = this.viewerRef.current;
+    if (el && el.contentWindow) el.contentWindow.postMessage({ mpDims: { sx: d.l / active.l, sy: d.h / active.h, sz: d.w / active.w } }, '*');
+  }
+  templatesData = {
+    packaging: [
+      { id: 'etui-gc1', label: 'Étui GC1', sub: 'Pattes opposées, alternées ou fond auto', src: 'modeles/pack-etui-gc1-fonds.html', l: 82, w: 82, h: 285, picto: 'M16,10 H32 V42 H16 Z M16,10 L20,4 H28 L32,10' },
+      { id: 'etui-sirop', label: 'Étui sirop', sub: 'Fond automatique', src: 'modeles/pack-etui-sirop.html', l: 62, w: 62, h: 125, picto: 'M18,14 H30 V42 H18 Z M18,14 L21,8 H27 L30,14 M21,20 H27' },
+      { id: 'fond-auto', label: 'Fond auto', sub: 'Mise en forme animée', src: 'modeles/pack-fond-auto.html', l: 82, w: 82, h: 285, picto: 'M16,8 H32 V40 H16 Z M16,40 L24,30 M32,40 L24,30' },
+      { id: 'coffret-rabat', label: 'Coffret rabat', sub: 'Format téléphone', src: 'modeles/pack-coffret-rabat.html', l: 170, w: 95, h: 45, picto: 'M8,20 H40 V40 H8 Z M8,20 L14,8 H34 L40,20' },
+      { id: 'coffret-cloche', label: 'Coffret cloche', sub: 'Format téléphone', src: 'modeles/pack-coffret-cloche.html', l: 170, w: 95, h: 45, picto: 'M10,22 H38 V42 H10 Z M8,14 H40 V22 H8 Z' },
+      { id: 'boite-cloche', label: 'Boîte à cloche', sub: 'Couvercle court', src: 'modeles/pack-boite-cloche.html', l: 200, w: 150, h: 80, picto: 'M8,20 H40 V42 H8 Z M6,12 H42 V20 H6 Z' },
+      { id: 'coffret-micro', label: 'Microcannelure', sub: 'Cloche ou caisse américaine', src: 'modeles/pack-coffret-micro.html', l: 250, w: 180, h: 100, picto: 'M8,14 H40 V42 H8 Z M12,28 Q16,24 20,28 T28,28 T36,28' }
+    ],
+    plv: [
+      { id: 'sol-standard', label: 'Sol standard', ref: 'PRE-SOL-PH-4E', sub: '4 étagères + fronton', src: 'modeles/plv-sol-standard.html', l: 520, w: 300, h: 1820, picto: 'M14,14 H34 V44 H14 Z M14,24 H34 M14,34 H34 M14,14 Q24,4 34,14' },
+      { id: 'sol-double', label: 'Double face', ref: 'PRE-ILO-PH-4T', sub: 'Étagères traversantes', src: 'modeles/plv-sol-double-face.html', l: 400, w: 400, h: 1820, picto: 'M12,12 H22 V44 H12 Z M26,12 H36 V44 H26 Z M12,24 H22 M26,24 H36 M12,34 H22 M26,34 H36' },
+      { id: 'ilot', label: 'Îlot 4 étages', ref: 'PRE-ILO-PH-8E', sub: 'Accès recto/verso', src: 'modeles/plv-ilot.html', l: 520, w: 400, h: 1820, picto: 'M14,10 H34 V44 H14 Z M14,20 H34 M14,28 H34 M14,36 H34 M10,44 H38' },
+      { id: 'box-palette', label: 'Box palette', ref: 'BOX-SOL-PH-45', sub: '3 bacs, demi-palette Europe', src: 'modeles/plv-box-palette.html', l: 600, w: 400, h: 1300, picto: 'M12,14 H36 V22 H12 Z M12,24 H36 V32 H12 Z M12,34 H36 V40 H12 Z M10,40 H38 V44 H10 Z M12,14 Q24,5 36,14' },
+      { id: 'totem', label: 'Totem', ref: 'TOT-SOL-PH-3F', sub: 'Porte-dépliants 3 faces', src: 'modeles/plv-totem.html', l: 350, w: 343, h: 1500, picto: 'M16,44 L24,6 L32,44 Z M20,30 H28' },
+      { id: 'comptoir-bac', label: 'Comptoir bac', ref: 'PRE-CPT-PH-24', sub: 'Bac + fronton, 24 produits', src: 'modeles/plv-comptoir-bac.html', l: 200, w: 300, h: 250, picto: 'M10,30 H38 V42 H10 Z M12,30 V12 Q24,6 36,12 V30' },
+      { id: 'escalier', label: 'Escalier', ref: 'PRE-CPT-PH-16', sub: '4 marches', src: 'modeles/plv-escalier.html', l: 150, w: 160, h: 255, picto: 'M10,42 V36 H18 V28 H26 V20 H34 V12 H38 V42 Z' },
+      { id: 'goulottes', label: 'Goulottes', ref: 'GRA-CPT-PH-18', sub: 'Gravitaire, auto-facing', src: 'modeles/plv-goulottes.html', l: 210, w: 260, h: 243, picto: 'M10,14 H38 V42 H10 Z M10,20 L38,28 M10,28 L38,36' },
+      { id: 'glorifier', label: 'Glorifier', ref: 'GLO-CPT-PH-4', sub: 'Exposition produit', src: 'modeles/plv-glorifier.html', l: 200, w: 127, h: 200, picto: 'M14,34 H34 V42 H14 Z M20,12 H28 V34 H20 Z' }
+    ]
+  };
+  trackRef = React.createRef();
+  frameRef = React.createRef();
+  pctRef = React.createRef();
+  barRef = React.createRef();
+  hintRef = React.createRef();
+
+  componentDidMount() {
+    this.raf = 0;
+    this.onScroll = () => {
+      if (!this.raf) this.raf = requestAnimationFrame(() => { this.raf = 0; this.push(); });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll, { passive: true });
+    this.applyGrid();
+    this.push();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    cancelAnimationFrame(this.raf);
+  }
+  componentDidUpdate() { this.applyGrid(); this.sendCfg(); }
+
+  applyGrid() {
+    document.body.style.backgroundImage = (this.props.grilleTechnique ?? true) ? '' : 'none';
+  }
+  send(msg) {
+    const w = this.frameRef.current && this.frameRef.current.contentWindow;
+    if (w) w.postMessage(msg, '*');
+  }
+  sendCfg() {
+    this.send({ mp: 'cfg', color: this.props.couleurCoffret ?? '#5C1F2B', autorotate: this.props.rotationAuto ?? true });
+  }
+  push() {
+    const t = this.trackRef.current;
+    if (!t) return;
+    const r = t.getBoundingClientRect();
+    const d = r.height - window.innerHeight;
+    const p = Math.max(0, Math.min(1, d > 0 ? -r.top / d : 0));
+    this.send({ mp: 'fold', p });
+    if (this.pctRef.current) this.pctRef.current.textContent = String(Math.round(p * 100)).padStart(3, '0') + ' %';
+    if (this.barRef.current) this.barRef.current.style.width = (p * 100) + '%';
+    if (this.hintRef.current) this.hintRef.current.style.opacity = p > 0.04 ? '0' : '1';
+  }
+  renderVals() {
+    const isPlv = this.state.typeDevis === 'plv';
+    const list = this.templatesData[this.state.typeDevis];
+    const activeId = isPlv ? this.state.tplPlv : this.state.tplPackaging;
+    const active = list.find(t => t.id === activeId) || list[0];
+    const dims = this.state.dims;
+    const selectTemplate = (tpl) => () => {
+      this.setState(s => ({
+        [isPlv ? 'tplPlv' : 'tplPackaging']: tpl.id,
+        dims: { l: tpl.l, w: tpl.w, h: tpl.h }
+      }));
+    };
+    const templates = list.map(tpl => ({
+      id: tpl.id,
+      label: tpl.label,
+      sub: tpl.sub || '',
+      picto: tpl.picto,
+      dimsText: tpl.l + '×' + tpl.w + '×' + tpl.h,
+      select: selectTemplate(tpl),
+      style: {
+        flex: '1 1 0', minWidth: '96px', background: tpl.id === activeId ? '#5B8DD6' : 'transparent',
+        color: tpl.id === activeId ? '#EDF2F9' : '#B4C5DC',
+        border: '1px solid ' + (tpl.id === activeId ? '#5B8DD6' : '#2A3D5C'),
+        padding: '14px 8px 12px', cursor: 'pointer', fontFamily: "'Archivo',sans-serif",
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', boxSizing: 'border-box'
+      }
+    }));
+    const setDim = (axis) => (e) => {
+      const v = Number(e.target.value);
+      this.setState(s => ({ dims: { ...s.dims, [axis]: v } }), () => this.sendDims());
+    };
+    const rng = (v) => ({ min: Math.max(10, Math.round(v * 0.4)), max: Math.round(v * 2) });
+    const heroMap = {
+      'Coffret (pliage)': 'fold-hero.html',
+      'Étui GC1 (montage)': 'fold-etui.html',
+      'Coffret à rabat (montage)': 'modeles/pack-coffret-rabat.html?bg=0B1526',
+      'Étui sirop': 'modeles/pack-etui-sirop.html?bg=0B1526',
+      'Coffret cloche': 'modeles/pack-coffret-cloche.html?bg=0B1526',
+      'Boîte à cloche': 'modeles/pack-boite-cloche.html?bg=0B1526',
+      'PLV de sol (montage)': 'fold-plv.html'
+    };
+    const heroChoice = this.props.modeleHero ?? 'Coffret (pliage)';
+    return {
+      heroSrc: heroMap[heroChoice] || 'fold-hero.html',
+      heroIsFold: heroChoice === 'Coffret (pliage)' || heroChoice.includes('(montage)'),
+      trackRef: this.trackRef, frameRef: this.frameRef, pctRef: this.pctRef, barRef: this.barRef, hintRef: this.hintRef,
+      typeDevis: this.state.typeDevis,
+      setTypePackaging: () => this.setState(s => {
+        const t = this.templatesData.packaging.find(x => x.id === s.tplPackaging) || this.templatesData.packaging[0];
+        return { typeDevis: 'packaging', dims: { l: t.l, w: t.w, h: t.h } };
+      }),
+      setTypePlv: () => this.setState(s => {
+        const t = this.templatesData.plv.find(x => x.id === s.tplPlv) || this.templatesData.plv[0];
+        return { typeDevis: 'plv', dims: { l: t.l, w: t.w, h: t.h } };
+      }),
+      tabPackagingStyle: { background: isPlv ? 'transparent' : '#5B8DD6', color: isPlv ? '#7E93B0' : '#EDF2F9', border: '1px solid ' + (isPlv ? '#2A3D5C' : '#5B8DD6'), fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', fontWeight: 700, letterSpacing: '.12em', padding: '11px 20px', cursor: 'pointer' },
+      tabPlvStyle: { background: isPlv ? '#5B8DD6' : 'transparent', color: isPlv ? '#EDF2F9' : '#7E93B0', border: '1px solid ' + (isPlv ? '#5B8DD6' : '#2A3D5C'), fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', fontWeight: 700, letterSpacing: '.12em', padding: '11px 20px', cursor: 'pointer' },
+      templates,
+      activeLabel: active.label,
+      activeRef: active.ref || 'SUR-MESURE',
+      ...(() => {
+        const sendZoom = (i, k) => { const el = this.figRefs[i].current; if (el && el.contentWindow) el.contentWindow.postMessage({ mpZoom: k }, '*'); };
+        const setK = (i, k) => { k = Math.min(1.8, Math.max(0.4, k)); this.setState(s => { const a = [...s.figK]; a[i] = k; return { figK: a }; }); sendZoom(i, k); };
+        const out = {};
+        const packs = this.templatesData.packaging, plvs = this.templatesData.plv;
+        const i1 = this.state.fig1Idx ?? 0, i2 = this.state.fig2Idx ?? 0;
+        out.fig1Src = packs[i1].src + '?bg=101D33';
+        out.fig1Label = packs[i1].label.toUpperCase();
+        out.fig2Src = plvs[i2].src + '?bg=101D33';
+        out.fig2Label = plvs[i2].label.toUpperCase();
+        out.prevFig1 = () => this.setState(s => ({ fig1Idx: ((s.fig1Idx ?? 0) - 1 + packs.length) % packs.length }));
+        out.nextFig1 = () => this.setState(s => ({ fig1Idx: ((s.fig1Idx ?? 0) + 1) % packs.length }));
+        out.prevFig2 = () => this.setState(s => ({ fig2Idx: ((s.fig2Idx ?? 0) - 1 + plvs.length) % plvs.length }));
+        out.nextFig2 = () => this.setState(s => ({ fig2Idx: ((s.fig2Idx ?? 0) + 1) % plvs.length }));
+        [0, 1, 2, 3].forEach(i => {
+          const n = i + 1;
+          out['figRef' + n] = this.figRefs[i];
+          out['figK' + n] = this.state.figK[i];
+          out['figFixed' + n] = this.state.figFixed[i];
+          out['setFigK' + n] = e => setK(i, +e.target.value);
+          out['toggleFigFixed' + n] = e => this.setState(s => { const a = [...s.figFixed]; a[i] = e.target.checked; return { figFixed: a }; });
+          out['wheelFig' + n] = e => { if (this.state.figFixed[i]) return; e.preventDefault(); setK(i, this.state.figK[i] * (e.deltaY < 0 ? 1.06 : 0.94)); };
+          out['figCtlStyle' + n] = { display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px', opacity: this.state.figFixed[i] ? 0.45 : 1 };
+        });
+        return out;
+      })(),
+      figStyle: (this.props.tailleFixe ?? false)
+        ? { height: (this.props.hauteurCadres ?? 627) + 'px', border: '1px solid #1E2F4A', background: '#101D33', position: 'relative' }
+        : { aspectRatio: '1/1', maxHeight: (this.props.hauteurCadres ?? 627) + 'px', border: '1px solid #1E2F4A', background: '#101D33', position: 'relative', overflow: 'hidden' },
+      viewerSrc: active.src,
+      viewerSrcBg: active.src + '?bg=101D33',
+      viewerRefHole: this.viewerRef,
+      onViewerLoad: () => this.sendDims(),
+      dimsSummary: dims.l + ' × ' + dims.w + ' × ' + dims.h + ' MM',
+      lVal: dims.l, wVal: dims.w, hVal: dims.h,
+      lMin: rng(active.l).min, lMax: rng(active.l).max,
+      wMin: rng(active.w).min, wMax: rng(active.w).max,
+      hMin: rng(active.h).min, hMax: rng(active.h).max,
+      setL: setDim('l'), setW: setDim('w'), setH: setDim('h'),
+      qtePlaceholder: isPlv ? '50' : '5 000',
+      onFrameLoad: () => { this.sendCfg(); this.push(); },
+      dragDown: (e) => {
+        this.dragging = true; this.dragX = e.clientX;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        e.currentTarget.style.cursor = 'grabbing';
+      },
+      dragMove: (e) => {
+        if (!this.dragging) return;
+        this.send({ mp: 'drag', dx: e.clientX - this.dragX });
+        this.dragX = e.clientX;
+      },
+      dragUp: (e) => { this.dragging = false; e.currentTarget.style.cursor = 'grab'; }
+    };
+  }
+}
+</script>
+</body>
+</html>

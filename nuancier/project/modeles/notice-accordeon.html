@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notice pharma — pliage accordéon</title>
+<style>
+html,body{margin:0;height:100%;background:#F1EDE3;overflow:hidden}
+body{font-family:ui-monospace,'JetBrains Mono',Menlo,monospace;color:#55565C}
+#ui{position:fixed;left:12px;top:12px;z-index:5;display:flex;flex-direction:column;gap:8px;font-size:10px;letter-spacing:.1em}
+.row{display:flex;align-items:center;gap:8px}
+button{font:inherit;border:1px solid #16171A;background:#FAF8F3;color:#16171A;width:22px;height:22px;cursor:pointer;padding:0;line-height:1}
+button:hover{background:#2442C8;color:#FAF8F3;border-color:#2442C8}
+#nb{min-width:14px;text-align:center;font-weight:700;color:#16171A}
+input[type=range]{width:110px;accent-color:#2442C8}
+#dims{position:fixed;left:12px;bottom:12px;z-index:5;font-size:9.5px;letter-spacing:.1em;line-height:1.7}
+#stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:900px}
+#world{transform-style:preserve-3d}
+.hinge{position:absolute;left:0;top:0;transform-origin:left center;transform-style:preserve-3d}
+.panel{position:absolute;left:0;top:0;transform-style:preserve-3d;background:#FFFFFF;border:1px solid #DDD8CC;box-sizing:border-box;backface-visibility:visible}
+.panel::before{content:'';position:absolute;inset:9px 8px;background:repeating-linear-gradient(#C9C4B8 0 1.5px,transparent 1.5px 8px)}
+.panel.first::after{content:'';position:absolute;left:8px;top:9px;right:8px;height:12px;background:#2442C8}
+.panel.first::before{inset:29px 8px 9px}
+#ui,#dims{display:none}</style>
+</head>
+<body>
+<div id="ui">
+  <div class="row"><span>VOLETS</span><button id="moins" type="button" aria-label="Moins de volets">−</button><span id="nb">6</span><button id="plus" type="button" aria-label="Plus de volets">+</button></div>
+  <div class="row"><span>PLIAGE</span><input id="fold" type="range" min="0" max="100" value="0" aria-label="Pliage"></div>
+</div>
+<div id="dims"></div>
+<div id="stage"><div id="world"></div></div>
+<script>
+const PW = 72, PH = 104, MM_W = 105, MM_H = 148;
+let n = 6, t = 0, auto = true, idleTimer = 0, spin = 0, zoomK = 1;
+window.addEventListener('message', e => { const d = e.data || {}; if (d.mpZoom) { zoomK = Math.max(0.3, +d.mpZoom || 1); render(); } });
+const world = document.getElementById('world');
+const nbEl = document.getElementById('nb');
+const dims = document.getElementById('dims');
+const fold = document.getElementById('fold');
+let hinges = [];
+function build() {
+  world.innerHTML = ''; hinges = [];
+  let parent = world;
+  for (let i = 0; i < n; i++) {
+    const h = document.createElement('div'); h.className = 'hinge';
+    if (i > 0) h.style.left = PW + 'px';
+    const p = document.createElement('div'); p.className = 'panel' + (i === 0 ? ' first' : '');
+    p.style.width = PW + 'px'; p.style.height = PH + 'px';
+    h.appendChild(p); parent.appendChild(h);
+    hinges.push(h); parent = p;
+  }
+  nbEl.textContent = n;
+  dims.innerHTML = 'FORMAT PLIÉ : ' + MM_W + ' × ' + MM_H + ' MM<br>OUVERT : ' + (MM_W * n) + ' × ' + MM_H + ' MM · ' + (n - 1) + ' PLIS';
+}
+function render() {
+  const a = t * 165;
+  for (let i = 1; i < hinges.length; i++)
+    hinges[i].style.transform = 'rotateY(' + (i % 2 ? -a : a) + 'deg)';
+  const openW = PW * n * (1 - t * 0.82);
+  const s = Math.min(1, (innerWidth * 0.72) / (PW * n), (innerHeight * 0.6) / PH) * (1 + t * 0.5) * zoomK;
+  world.style.transform = 'scale(' + s + ') rotateX(18deg) rotateY(' + spin + 'deg) translateX(' + (-openW / 2) + 'px) translateY(' + (-PH / 2) + 'px)';
+}
+fold.addEventListener('input', () => {
+  auto = false; t = fold.value / 100; render();
+  clearTimeout(idleTimer); idleTimer = setTimeout(() => { auto = true; }, 4000);
+});
+document.getElementById('moins').onclick = () => { if (n > 3) { n--; build(); render(); } };
+document.getElementById('plus').onclick = () => { if (n < 10) { n++; build(); render(); } };
+let start = performance.now();
+(function loop(now) {
+  spin = -18 + 12 * Math.sin(now / 5200);
+  if (auto) {
+    t = 0.5 - 0.5 * Math.cos(((now - start) % 7700) / 7700 * 2 * Math.PI);
+    fold.value = Math.round(t * 100);
+  }
+  render();
+  requestAnimationFrame(loop);
+})(start);
+build(); render();
+addEventListener('resize', render);
+</script>
+<script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script><style id="__embed_bg_ui__">#ui,#dims{display:none}</style><script>(function(){if(!new URLSearchParams(location.search).get('bg'))return;document.getElementById('__embed_bg_ui__').textContent='body{color:#B4C5DC}#nb{color:#EDF2F9}button{background:#101D33;color:#EDF2F9;border-color:#2A3D5C}#dims{color:#7E93B0}.panel{border-color:#2A3D5C}';})();</script></body>
+</html>

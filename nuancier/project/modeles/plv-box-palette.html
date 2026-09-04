@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Box palette prêt à vendre — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="20" y="12" width="60" height="18" fill="#f4f1e9"/>
+    <rect x="44" y="8" width="12" height="26" fill="#0f8a4f"/>
+    <rect x="20" y="17" width="60" height="7" fill="#0f8a4f"/>
+    <g fill="#f4f1e9">
+      <rect x="22" y="36" width="56" height="16"/>
+      <rect x="22" y="54" width="56" height="16"/>
+      <rect x="22" y="72" width="56" height="16"/>
+    </g>
+    <g fill="#0f8a4f">
+      <rect x="22" y="47" width="56" height="5"/>
+      <rect x="22" y="65" width="56" height="5"/>
+      <rect x="22" y="83" width="56" height="5"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "BOX-SOL-PH-45",
+  "famille": "PLV",
+  "type": "box palette pret a vendre, 3 bacs empiles",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "matiere": "carton double cannelure blanc recto/verso",
+  "cannelure": "double",
+  "epaisseur_mm": 5,
+  "hors_tout_mm": { "l": 600, "p": 400, "h": 1300 },
+  "corps_mm": { "l": 600, "p": 400, "h": 900 },
+  "socle_mm": { "l": 600, "p": 400, "h": 140, "type": "socle palette carton, emprise demi-palette Europe" },
+  "bacs": { "nombre": 3, "hauteur_mm": 200, "facade_mm": 90, "type": "bac pret a vendre, depose sans manipulation" },
+  "caisson_tete_mm": { "l": 590, "h": 160, "role": "communication + ancrage fronton" },
+  "fronton_mm": { "l": 600, "h": 400, "decoupe": "arche", "aligne_sur_corps": true },
+  "chargement": { "bacs": 3, "facings": 5, "rangs": 3, "capacite": 45,
+                  "produit": "boite pharma",
+                  "produit_mm": { "l": 110, "p": 110, "h": 180 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-box-palette-pret-a-vendre-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — Box palette prêt à vendre — 3 bacs, emprise demi-palette</b>
+  <span>emprise 60 × 40 cm (demi-palette Europe) · H 130 cm hors tout · socle palette carton 14 cm · 3 bacs empilés H 20 cm, façade basse 9 cm · caisson de tête plein 59 × 16 cm · fronton 60 cm aligné sur le corps · 5 facings × 3 rangs × 3 bacs = 45 boîtes 110 × 110 × 180 mm · double cannelure 5 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const packMat = new THREE.MeshStandardMaterial({ name: 'pack_blanc_maquette', color: 0xe4e2db, roughness: 0.8, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton, pack: packMat };
+
+const plv = new THREE.Group();
+plv.name = 'box_palette_pret_a_vendre_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+function croixShape(a, b) {
+  const c = new THREE.Shape();
+  c.moveTo(-a, -b);
+  c.lineTo(a, -b); c.lineTo(a, -a); c.lineTo(b, -a);
+  c.lineTo(b, a);  c.lineTo(a, a);  c.lineTo(a, b);
+  c.lineTo(-a, b); c.lineTo(-a, a); c.lineTo(-b, a);
+  c.lineTo(-b, -a); c.lineTo(-a, -a);
+  c.closePath();
+  return c;
+}
+function archeShape(hw, yRect, yShoulder, ctrl, inset) {
+  const s = new THREE.Shape();
+  s.moveTo(-hw, 0);
+  s.lineTo(hw, 0);
+  s.lineTo(hw, yRect);
+  s.quadraticCurveTo(hw, (yRect + yShoulder) / 2, hw - inset, yShoulder);
+  s.quadraticCurveTo(0, ctrl, -(hw - inset), yShoulder);
+  s.quadraticCurveTo(-hw, (yRect + yShoulder) / 2, -hw, yRect);
+  s.closePath();
+  return s;
+}
+
+const T = 0.005;
+const W = 0.60, D = 0.40;
+const SOCLE_H = 0.14;
+const BAC_H = 0.20, N_BAC = 3;
+const TETE_Y = SOCLE_H + BAC_H * N_BAC;
+const TETE_H = 0.16;
+const TOP_Y = TETE_Y + TETE_H;
+const PK = 0.11, PK_H = 0.18;
+
+/* socle palette carton */
+plv.add(mesh('car_socle_palette', box(W, SOCLE_H, D), mat.kraft, [0, SOCLE_H / 2, 0]));
+plv.add(mesh('imp_socle_face', box(W, SOCLE_H, 0.0015), mat.blanc, [0, SOCLE_H / 2, D / 2 + 0.0008]));
+plv.add(mesh('imp_socle_filet', box(W, 0.030, 0.0015), mat.vert, [0, 0.015, D / 2 + 0.0018]));
+
+/* 3 bacs pret a vendre empiles, facade basse pour la visibilite */
+for (let k = 1; k <= N_BAC; k++) {
+  const y0 = SOCLE_H + BAC_H * (k - 1);
+  const iw = W - 0.01, id = D - 0.01;
+  plv.add(mesh('car_bac_' + k + '_fond', box(iw, T, id), mat.tranche, [0, y0 + T / 2, 0]));
+  plv.add(mesh('car_bac_' + k + '_paroi_arriere', box(iw, BAC_H, T), mat.kraft, [0, y0 + BAC_H / 2, -id / 2 + T / 2]));
+  plv.add(mesh('car_bac_' + k + '_paroi_droite', box(T, BAC_H, id - 2 * T), mat.kraft, [iw / 2 - T / 2, y0 + BAC_H / 2, 0]));
+  plv.add(mesh('car_bac_' + k + '_paroi_gauche', box(T, BAC_H, id - 2 * T), mat.kraft, [-iw / 2 + T / 2, y0 + BAC_H / 2, 0]));
+  plv.add(mesh('car_bac_' + k + '_facade', box(iw, 0.09, T), mat.blanc, [0, y0 + 0.045, id / 2 - T / 2]));
+  plv.add(mesh('imp_bac_' + k + '_filet', box(iw - 0.004, 0.024, 0.0015), mat.vert, [0, y0 + 0.020, id / 2 + 0.0008]));
+  for (let c = 0; c < 5; c++) {
+    const x = -0.275 + 0.11 * (c + 0.5);
+    for (let r = 0; r < 3; r++) {
+      const z = id / 2 - T - PK / 2 - PK * r;
+      const id2 = 'prd_boite_b' + k + '_c' + (c + 1) + '_r' + (r + 1);
+      const g = new THREE.Group();
+      g.name = id2;
+      g.position.set(x, y0 + T, z);
+      g.add(mesh(id2 + '_corps', box(PK, PK_H, PK), mat.pack, [0, PK_H / 2, 0]));
+      g.add(mesh(id2 + '_etiquette', box(0.082, 0.100, 0.0012), mat.vert, [0, 0.115, PK / 2 + 0.0006]));
+      plv.add(g);
+    }
+  }
+}
+
+/* caisson de tete plein : ancrage du fronton + communication */
+const tw = W - 0.01, td = D - 0.01;
+plv.add(mesh('car_caisson_tete_avant', box(tw, TETE_H, T), mat.kraft, [0, TETE_Y + TETE_H / 2, td / 2 - T / 2]));
+plv.add(mesh('car_caisson_tete_arriere', box(tw, TETE_H, T), mat.kraft, [0, TETE_Y + TETE_H / 2, -td / 2 + T / 2]));
+plv.add(mesh('car_caisson_tete_droit', box(T, TETE_H, td - 2 * T), mat.kraft, [tw / 2 - T / 2, TETE_Y + TETE_H / 2, 0]));
+plv.add(mesh('car_caisson_tete_gauche', box(T, TETE_H, td - 2 * T), mat.kraft, [-tw / 2 + T / 2, TETE_Y + TETE_H / 2, 0]));
+plv.add(mesh('car_caisson_tete_dessus', box(tw, T, td), mat.kraft, [0, TOP_Y - T / 2, 0]));
+plv.add(mesh('imp_caisson_tete_face', box(tw, TETE_H, 0.0015), mat.blanc, [0, TETE_Y + TETE_H / 2, td / 2 + 0.0008]));
+plv.add(mesh('imp_caisson_tete_filet', box(tw - 0.006, 0.040, 0.0015), mat.vert, [0, TETE_Y + 0.030, td / 2 + 0.0018]));
+
+/* fronton aligne sur le corps, pique dans le caisson de tete */
+const F_HW = W / 2;
+const archeGeo = extrude(archeShape(F_HW, 0.22, 0.30, 0.395, 0.07), T);
+const fronton = new THREE.Group();
+fronton.name = 'car_fronton';
+fronton.position.set(0, TOP_Y, 0);
+fronton.add(mesh('car_fronton_panneau', archeGeo, mat.blanc, [0, 0, T / 2]));
+fronton.add(mesh('car_fronton_doublage', archeGeo, mat.kraft, [0, 0, -T / 2]));
+fronton.add(mesh('imp_fronton_bandeau', box(W - 0.008, 0.070, 0.0015), mat.vert, [0, 0.095, 1.5 * T + 0.0008]));
+fronton.add(mesh('imp_fronton_croix', extrude(croixShape(0.026, 0.070), 0.0015), mat.vert, [0, 0.265, 1.5 * T]));
+[['droite', 0.16], ['gauche', -0.16]].forEach(([cote, x]) => {
+  fronton.add(mesh('car_fronton_patte_encastrement_' + cote, box(0.06, 0.13, T), mat.kraft, [x, -0.068, 0]));
+});
+plv.add(fronton);
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

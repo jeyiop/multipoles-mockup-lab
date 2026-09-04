@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fond automatique — de l'étui à plat au montage en quelques secondes</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  three-d-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;height:100%;background:#efece6}
+  body{font-family:"Instrument Sans",system-ui,sans-serif;color:#2b2620}
+  a{color:#5a5348}
+  a:hover{color:#2b2620}
+  #panel{position:fixed;top:22px;left:24px;z-index:5;width:258px;display:flex;flex-direction:column;gap:12px}
+  #panel h1{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.01em;line-height:1.35}
+  #panel h1 span{display:block;font-size:11px;font-weight:400;color:#7a7367}
+  #phase{display:flex;flex-direction:column;gap:5px}
+  #phase input{width:100%;margin:0;accent-color:#2b2620;height:14px}
+  #phase div{display:flex;justify-content:space-between;font-size:10px;color:#7a7367;letter-spacing:.02em}
+  #phase div b{font-weight:500;color:#2b2620}
+  .row{display:flex;flex-wrap:wrap;gap:4px}
+  .row button{
+    font:inherit;font-size:11.5px;line-height:1;padding:6px 9px;border:1px solid #cfc8bb;
+    border-radius:2px;background:#faf8f4;color:#4a443b;cursor:pointer;
+  }
+  .row button:hover{border-color:#8b8378;color:#2b2620}
+  .row button.primary{background:#2b2620;border-color:#2b2620;color:#faf8f4}
+  .row button.primary:hover{background:#453e35;border-color:#453e35}
+  #note{margin:0;font-size:11px;line-height:1.45;color:#7a7367;text-wrap:pretty}
+  #note b{font-weight:500;color:#4a443b}
+  #legend{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#7a7367}
+  #legend i{width:10px;height:10px;border-radius:1px;background:#d8bb8a;flex:none}
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Fond automatique — mise en forme<span>Étui GC1 350 g/m² · 82 × 82 × 285 mm</span></h1>
+  <div id="phase">
+    <input type="range" id="slider" min="0" max="1" step="0.002" value="1" aria-label="Mise en forme">
+    <div><span id="l0">À plat</span><span id="l1"><b>Monté</b></span></div>
+  </div>
+  <div class="row">
+    <button type="button" id="play" class="primary">Mettre en forme</button>
+    <button type="button" id="v34">Vue 3/4</button>
+    <button type="button" id="vbas">Vue du fond</button>
+  </div>
+  <p id="note"><b>4 rabats croisés, 2 points de collage au fond.</b> L'étui est livré à plat ; un simple pincement des diagonales ouvre le tube et les rabats se verrouillent d'eux-mêmes. Aucun montage manuel du fond.</p>
+  <div id="legend"><i></i>Zones de collage (colle vinylique)</div>
+</div>
+
+<three-d-stage name="etui-gc1-fond-auto" background="#efece6"></three-d-stage>
+<script src="three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const W = 0.082, D = 0.082, H = 0.285, t = 0.0006;
+const A_MIN = 0.055, A_MAX = Math.PI/2;
+
+const M = {
+  board: new THREE.MeshStandardMaterial({ name:'carton_gc1', color:0xf6f3ec, roughness:0.7, metalness:0.02 }),
+  core:  new THREE.MeshStandardMaterial({ name:'tranche_carton', color:0xc8b596, roughness:0.95, metalness:0 }),
+  glue:  new THREE.MeshStandardMaterial({ name:'colle', color:0xd8bb8a, roughness:0.55, metalness:0 })
+};
+const F = (px,nx,py,ny,pz,nz) => [px,nx,py,ny,pz,nz];
+const wallMat = F(M.core, M.core, M.core, M.core, M.board, M.board);
+const flatMat = F(M.core, M.core, M.board, M.board, M.core, M.core);
+
+function mesh(parent, name, geo, mat, pos, rot) {
+  const m = new THREE.Mesh(geo, mat);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0], rot[1], rot[2]);
+  parent.add(m);
+  return m;
+}
+function group(parent, name) { const g = new THREE.Group(); g.name = name; parent.add(g); return g; }
+
+/* Rabat de fond : quadrilatère articulé sur l'arête basse du panneau, coupé à 45°
+   du côté de l'angle aigu du tube (sgn indique de quel bout). layer décale le rabat
+   en épaisseur pour reproduire le croisement en moulin. */
+function bottomFlap(wall, name, len, reach, layer, glue, sgn) {
+  const piv = group(wall, name + '_pli');
+  piv.position.set(0, layer * 1.6 * t, 0);
+  const e = 0.0007, s = new THREE.Shape();
+  s.moveTo(e, 0);
+  s.lineTo(len - e, 0);
+  if (sgn > 0) { s.lineTo(len - e, -reach); s.lineTo(reach, -reach); }
+  else         { s.lineTo(len - reach, -reach); s.lineTo(e, -reach); }
+  s.closePath();
+  const bev = { depth: t, bevelEnabled: true, bevelSize: 0.00042, bevelThickness: 0.00022, bevelSegments: 1 };
+  mesh(piv, name, new THREE.ExtrudeGeometry(s, bev), [M.board, M.core], [0, -t/2, 0], [Math.PI/2, 0, 0]);
+  if (glue) mesh(piv, name + '_collage', new THREE.BoxGeometry(0.020, 0.0004, 0.014), M.glue,
+                 [len * (sgn > 0 ? 0.80 : 0.70), -1.5*t - 0.00028, -reach * (sgn > 0 ? 0.45 : 0.28)]);
+  /* Patte d'angle articulée sur le pli à 45° : à plat elle se replie sur le rabat,
+     dressée elle complète le rabat dans le plan du fond. C'est ce pli qui évite
+     que le rabat traverse le panneau voisin pendant la mise en forme. */
+  const cr = group(piv, name + '_patte_pli');
+  cr.rotation.order = 'YXZ';                 // pli à 45° : le Y (orientation du pli) doit précéder le X (repli)
+  cr.position.set(sgn > 0 ? 0 : len, 0, 0);
+  cr.rotation.y = sgn > 0 ? Math.PI/4 : 3*Math.PI/4;
+  const L = reach * Math.SQRT2, apex = sgn > 0 ? -L/2 + 0.0009 : L/2 - 0.0009;
+  const ls = new THREE.Shape();
+  ls.moveTo(0.0009, 0); ls.lineTo(L - 0.0009, 0); ls.lineTo(L/2, apex);
+  ls.closePath();
+  mesh(cr, name + '_patte', new THREE.ExtrudeGeometry(ls, bev), [M.board, M.core],
+       [0, -t/2, 0], [Math.PI/2, 0, 0]);
+  return { piv, cr };
+}
+
+/* Panneau vertical : pivot sur le coin de départ, développé vers +x local, intérieur vers -z local. */
+function wall(root, name, len, flapReach, layer, glue, top, sgn) {
+  const g = group(root, name);
+  mesh(g, name + '_panneau', new THREE.BoxGeometry(len, H, t), wallMat, [len/2, H/2, t/2]);
+  const flap = bottomFlap(g, name.replace('panneau', 'fond'), len, flapReach, layer, glue, sgn);
+  if (top === 'rabat') {
+    mesh(g, name + '_rabat_poussiere', new THREE.BoxGeometry(len - 0.001, 0.030, t), wallMat,
+         [len/2, H + 0.015, t/2]);
+  } else if (top === 'fermeture') {
+    mesh(g, name + '_panneau_fermeture', new THREE.BoxGeometry(len - 0.001, D - 0.0016, t), wallMat,
+         [len/2, H + (D - 0.0016)/2, t/2]);
+    mesh(g, name + '_languette', new THREE.BoxGeometry(len - 0.009, 0.020, t), wallMat,
+         [len/2, H + D + 0.0084, t/2]);
+  }
+  return { g, flap: flap.piv, crease: flap.cr, sgn };
+}
+
+const root = new THREE.Group();
+root.name = 'etui_fond_automatique';
+const back  = wall(root, 'panneau_arriere', W, (D - 2.6*t)*0.62, 0, false, 'fermeture',  1);
+const right = wall(root, 'panneau_droit',   D, (W - 2.6*t)*0.62, 1, true,  'rabat',     -1);
+const front = wall(root, 'panneau_avant',   W, (D - 2.6*t)*0.62, 2, true,  null,         1);
+const left  = wall(root, 'panneau_gauche',  D, (W - 2.6*t)*0.62, 3, false, 'rabat',     -1);
+
+/* Patte de collage du tube (couture verticale) + trace de colle. */
+mesh(back.g, 'patte_de_collage', new THREE.BoxGeometry(0.015, H - 0.003, t), M.board,
+     [0.0085, H/2, -t/2]);
+mesh(back.g, 'patte_de_collage_colle', new THREE.BoxGeometry(0.010, H - 0.030, 0.0003), M.glue,
+     [0.0085, H/2, -t - 0.00015]);
+
+root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+function place(w, u, v, ry, cu, cv) {
+  w.g.position.set(u - cu, 0, -(v - cv));
+  w.g.rotation.y = ry;
+}
+function setPhase(p) {
+  const a = A_MIN + (A_MAX - A_MIN) * p;
+  const ca = Math.cos(a), sa = Math.sin(a);
+  const cu = (W + D*ca)/2, cv = D*sa/2;
+  place(back,  0,       0,     0,          cu, cv);
+  place(right, W,       0,     a,          cu, cv);
+  place(front, W + D*ca, D*sa, Math.PI,    cu, cv);
+  place(left,  D*ca,     D*sa, Math.PI + a, cu, cv);
+  /* La patte d'angle reste repliée sur son rabat pendant l'ouverture du tube et ne se
+     déplie que sur la fin, quand l'étui est presque d'équerre : c'est le mouvement réel
+     du pli d'angle, et rien ne sort du gabarit. */
+  const u = Math.min(1, Math.max(0, (p - 0.72) / 0.28));
+  const b = Math.PI/2 - a, gam = Math.PI * (1 - u*u*(3 - 2*u));
+  [back, right, front, left].forEach(w => { w.flap.rotation.x = b; w.crease.rotation.x = w.sgn * gam; });
+}
+
+setPhase(1);
+stage.setObject(root);
+
+const slider = document.getElementById('slider');
+const l0 = document.getElementById('l0'), l1 = document.getElementById('l1');
+let raf = null;
+
+function apply(p) {
+  setPhase(p);
+  slider.value = p;
+  l0.innerHTML = p < 0.02 ? '<b>À plat</b>' : 'À plat';
+  l1.innerHTML = p > 0.98 ? '<b>Monté</b>' : 'Monté';
+}
+slider.addEventListener('input', () => { cancelAnimationFrame(raf); apply(+slider.value); });
+
+document.getElementById('play').addEventListener('click', () => {
+  cancelAnimationFrame(raf);
+  const from = +slider.value < 0.5 ? 0 : 1, to = from === 0 ? 1 : 0, t0 = performance.now();
+  apply(from);
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 1400);
+    const e = k < 0.5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
+    apply(from + (to - from) * e);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+});
+
+const tan = () => Math.tan((stage._camera.fov * Math.PI) / 360);
+function view(dx, dy, dz, mode) {
+  const box = new THREE.Box3().setFromObject(root);
+  const c = box.getCenter(new THREE.Vector3());
+  let tgt, dist;
+  if (mode === 'fond') {                    // cadré sur l'empreinte du fond, pas sur tout le tube
+    tgt = new THREE.Vector3(c.x, box.min.y, c.z);
+    dist = (Math.hypot(box.max.x - box.min.x, box.max.z - box.min.z) / 2 / tan()) * 1.45;
+  } else {
+    tgt = c;
+    dist = (box.getBoundingSphere(new THREE.Sphere()).radius / tan()) * 1.30;
+  }
+  stage._camera.position.copy(tgt).add(new THREE.Vector3(dx, dy, dz).normalize().multiplyScalar(dist));
+  stage._controls.target.copy(tgt);
+  stage._controls.update();
+}
+document.getElementById('v34').addEventListener('click', () => view(1, 0.55, 1.25));
+document.getElementById('vbas').addEventListener('click', () => view(0.55, -1.6, 0.7, 'fond'));
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

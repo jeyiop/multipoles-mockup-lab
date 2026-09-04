@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Présentoir de comptoir à goulottes gravitaires</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="30" y="12" width="40" height="16" fill="#f4f1e9"/>
+    <rect x="46" y="8" width="8" height="24" fill="#0f8a4f"/>
+    <rect x="30" y="17" width="40" height="6" fill="#0f8a4f"/>
+    <path d="M24 34 L76 34 L76 84 L24 62 Z" fill="#f4f1e9"/>
+    <g fill="#0f8a4f">
+      <rect x="30" y="46" width="12" height="26"/>
+      <rect x="44" y="44" width="12" height="28"/>
+      <rect x="58" y="42" width="12" height="30"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "GRA-CPT-PH-18",
+  "famille": "PLV",
+  "type": "presentoir de comptoir a goulottes gravitaires",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "matiere": "carton compact blanc recto/verso",
+  "cannelure": "simple",
+  "epaisseur_mm": 3,
+  "hors_tout_mm": { "l": 210, "p": 260, "h": 243 },
+  "corps_mm": { "l": 210, "p": 260, "h": 108 },
+  "goulottes": { "nombre": 3, "longueur_mm": 250, "pente_deg": 14.6, "butee_mm": 22,
+                 "principe": "auto-facing par gravite, le produit avance seul quand on preleve" },
+  "joue": { "construction": "doublage 2 plis colles", "profil": "biseau, une seule coupe droite parallele a la pente", "epaisseur_vue_mm": 6 },
+  "fronton_mm": { "l": 210, "h": 240, "decoupe": "arche", "aligne_sur_joues": true },
+  "chargement": { "goulottes": 3, "profondeur": 6, "capacite": 18,
+                  "produit": "boite pharma",
+                  "produit_mm": { "l": 58, "p": 36, "h": 90 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-comptoir-goulottes-gravitaires-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — Présentoir de comptoir à goulottes gravitaires — auto-facing</b>
+  <span>emprise 21 × 26 cm · H 24 cm hors tout · 3 goulottes inclinées à 14,6°, butée 22 mm, le produit avance seul au prélèvement · joues et séparateurs doublés 2 plis à profil biseauté · fronton 21 cm aligné sur les joues · 3 × 6 = 18 boîtes 58 × 36 × 90 mm · simple cannelure 3 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const packMat = new THREE.MeshStandardMaterial({ name: 'pack_blanc_maquette', color: 0xe4e2db, roughness: 0.8, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton, pack: packMat };
+
+const plv = new THREE.Group();
+plv.name = 'presentoir_comptoir_goulottes_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+function croixShape(a, b) {
+  const c = new THREE.Shape();
+  c.moveTo(-a, -b);
+  c.lineTo(a, -b); c.lineTo(a, -a); c.lineTo(b, -a);
+  c.lineTo(b, a);  c.lineTo(a, a);  c.lineTo(a, b);
+  c.lineTo(-a, b); c.lineTo(-a, a); c.lineTo(-b, a);
+  c.lineTo(-b, -a); c.lineTo(-a, -a);
+  c.closePath();
+  return c;
+}
+function archeShape(hw, yRect, yShoulder, ctrl, inset) {
+  const s = new THREE.Shape();
+  s.moveTo(-hw, 0);
+  s.lineTo(hw, 0);
+  s.lineTo(hw, yRect);
+  s.quadraticCurveTo(hw, (yRect + yShoulder) / 2, hw - inset, yShoulder);
+  s.quadraticCurveTo(0, ctrl, -(hw - inset), yShoulder);
+  s.quadraticCurveTo(-hw, (yRect + yShoulder) / 2, -hw, yRect);
+  s.closePath();
+  return s;
+}
+
+const T = 0.003;
+const W = 0.21, D = 0.26;
+const N_GOU = 3;
+const GOU_L = 0.25;                    // longueur d'une goulotte
+const PENTE = 0.255;                   // ~14,6 degres
+const GOU_W = (W - 0.012 - 2 * T) / N_GOU;
+const PK_W = GOU_W - 0.006, PK_H = 0.090, PK_D = 0.036;
+const Y_MID = 0.0425;
+
+/* fond + retour avant */
+plv.add(mesh('car_fond', box(W, T, D), mat.tranche, [0, T / 2, 0]));
+plv.add(mesh('car_retour_avant', box(W, 0.031, T), mat.blanc, [0, T + 0.0155, D / 2 - T / 2]));
+plv.add(mesh('imp_retour_avant_filet', box(W - 0.004, 0.014, 0.0012), mat.vert, [0, T + 0.012, D / 2 + 0.0006]));
+
+/* joues doublees + separateurs : meme profil biseaute, parallele a la pente */
+const joue = new THREE.Shape();
+joue.moveTo(D / 2, 0);
+joue.lineTo(-D / 2, 0);
+joue.lineTo(-D / 2, 0.108);
+joue.lineTo(D / 2, 0.045);
+joue.closePath();
+const joueGeo = extrude(joue, T);
+[['droite', 1], ['gauche', -1]].forEach(([cote, sx]) => {
+  const x0 = sx > 0 ? W / 2 : -W / 2 + T;
+  plv.add(mesh('car_joue_' + cote, joueGeo, mat.kraft, [x0, 0, 0], [0, -Math.PI / 2, 0]));
+  plv.add(mesh('car_joue_' + cote + '_doublage', joueGeo, mat.tranche, [x0 - sx * T, 0, 0], [0, -Math.PI / 2, 0]));
+});
+for (let k = 1; k <= N_GOU - 1; k++) {
+  const x = -W / 2 + 0.006 + GOU_W * k + T * (k - 0.5);
+  plv.add(mesh('car_separateur_' + k, joueGeo, mat.kraft, [x + T / 2, 0, 0], [0, -Math.PI / 2, 0]));
+}
+
+/* 3 goulottes inclinees, butee basse, produits en auto-facing */
+for (let k = 1; k <= N_GOU; k++) {
+  const x = -W / 2 + 0.006 + GOU_W * (k - 0.5) + T * (k - 1);
+  const g = new THREE.Group();
+  g.name = 'car_goulotte_' + k;
+  g.position.set(x, Y_MID, 0);
+  g.rotation.x = PENTE;
+  g.add(mesh('car_goulotte_' + k + '_plateau', box(GOU_W, T, GOU_L), mat.tranche, [0, 0, 0]));
+  g.add(mesh('car_goulotte_' + k + '_butee', box(GOU_W, 0.022, T), mat.blanc, [0, 0.011 + T / 2, GOU_L / 2 - T / 2]));
+  g.add(mesh('imp_goulotte_' + k + '_filet', box(GOU_W, 0.008, 0.0012), mat.vert, [0, 0.018, GOU_L / 2 + 0.0006]));
+  for (let i = 0; i < 6; i++) {
+    const z = GOU_L / 2 - T - PK_D / 2 - PK_D * i;
+    const id = 'prd_boite_g' + k + '_p' + (i + 1);
+    const gp = new THREE.Group();
+    gp.name = id;
+    gp.position.set(0, T / 2, z);
+    gp.add(mesh(id + '_corps', box(PK_W, PK_H, PK_D), mat.pack, [0, PK_H / 2, 0]));
+    gp.add(mesh(id + '_etiquette', box(PK_W - 0.014, 0.044, 0.0012), mat.vert, [0, 0.052, PK_D / 2 + 0.0006]));
+    g.add(gp);
+  }
+  plv.add(g);
+}
+
+/* dos-fronton en une piece, aligne sur les joues */
+const F_HW = W / 2;
+const archeGeo = extrude(archeShape(F_HW, 0.152, 0.205, 0.275, 0.024), T);
+const fronton = new THREE.Group();
+fronton.name = 'car_dos_fronton';
+fronton.position.set(0, T, -D / 2);
+fronton.add(mesh('car_dos_fronton_panneau', archeGeo, mat.blanc, [0, 0, T]));
+fronton.add(mesh('car_dos_fronton_doublage', archeGeo, mat.kraft, [0, 0, 0]));
+fronton.add(mesh('imp_fronton_bandeau', box(W - 0.004, 0.016, 0.0015), mat.vert, [0, 0.178, 2 * T + 0.0008]));
+fronton.add(mesh('imp_fronton_croix', extrude(croixShape(0.0062, 0.016), 0.0015), mat.vert, [0, 0.208, 2 * T]));
+const patte = box(T, 0.024, 0.022);
+fronton.add(mesh('car_patte_collage_droite', patte, mat.kraft, [W / 2 - 2.5 * T, 0.012, 2 * T + 0.011]));
+fronton.add(mesh('car_patte_collage_gauche', patte, mat.kraft, [-W / 2 + 2.5 * T, 0.012, 2 * T + 0.011]));
+plv.add(fronton);
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Héro — pliage 3D</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/lines/LineSegments2.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineSegments2.js",
+    "three/addons/lines/LineSegmentsGeometry.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineSegmentsGeometry.js",
+    "three/addons/lines/LineMaterial.js": "https://unpkg.com/three@0.184.0/examples/jsm/lines/LineMaterial.js",
+    "three/addons/environments/RoomEnvironment.js": "https://unpkg.com/three@0.184.0/examples/jsm/environments/RoomEnvironment.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  #wrap{position:absolute;inset:0}
+  #wrap canvas{display:block}
+  #fb{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+  #fb.on{display:flex}
+</style>
+</head>
+<body>
+<div id="wrap"></div>
+<div id="fb" aria-hidden="true">
+  <svg viewBox="0 0 460 420" style="width:min(72%,540px)" fill="none">
+    <path d="M95,213 L95,323 L150,323 L150,378 L310,378 L310,323 L365,323 L365,213 L310,213 L310,10 L150,10 L150,213 Z" stroke="#1B1C20" stroke-width="2"></path>
+    <g stroke="#2442C8" stroke-width="1.4" stroke-dasharray="7 5">
+      <line x1="150" y1="46" x2="310" y2="46"></line>
+      <line x1="150" y1="158" x2="310" y2="158"></line>
+      <line x1="150" y1="213" x2="310" y2="213"></line>
+      <line x1="150" y1="323" x2="310" y2="323"></line>
+      <line x1="150" y1="213" x2="150" y2="323"></line>
+      <line x1="310" y1="213" x2="310" y2="323"></line>
+    </g>
+  </svg>
+</div>
+<script type="module">
+const fb = document.getElementById('fb');
+let THREE;
+try { THREE = await import('three'); }
+catch (e) { fb.classList.add('on'); throw e; }
+
+const wrap = document.getElementById('wrap');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2.5));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.97;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+wrap.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 50);
+
+// Éclairage studio : environnement PMREM (reflets doux) + directionnelle pour l'ombre
+try {
+  const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.72;
+} catch (e) { scene.add(new THREE.AmbientLight(0xffffff, 1.0)); }
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc8b8, 0.3));
+const sun = new THREE.DirectionalLight(0xffffff, 1.15);
+sun.position.set(2.6, 4.2, 1.8);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -2.6; sun.shadow.camera.right = 2.6;
+sun.shadow.camera.top = 2.6; sun.shadow.camera.bottom = -2.6;
+sun.shadow.radius = 9;
+sun.shadow.bias = -0.0002;
+scene.add(sun);
+// Contre-jour rasant : détache le coffret du fond et révèle la tranche du carton
+const rim = new THREE.DirectionalLight(0xfff4e2, 0.55);
+rim.position.set(-3.2, 1.1, -2.4);
+scene.add(rim);
+const fill = new THREE.DirectionalLight(0xe8eef7, 0.3);
+fill.position.set(-1.4, 0.7, 3.2);
+scene.add(fill);
+
+
+// ---- palette & materials (morph plan -> produit) ----
+const PAPER = new THREE.Color('#F5F2EA');
+const PAPER_EDGE = new THREE.Color('#E2DCCD');
+const KRAFT = new THREE.Color('#C6A472');
+let outerCol = new THREE.Color('#5C1F2B');
+// La tranche d'un coffret habillé = le même papier replié, assombri par le pli
+const wrapCol = new THREE.Color();
+const wrapOf = c => wrapCol.copy(c).multiplyScalar(0.74);
+
+const matOuter = new THREE.MeshPhysicalMaterial({
+  color: PAPER.clone(), roughness: 0.56, metalness: 0,
+  clearcoat: 0.1, clearcoatRoughness: 0.68,
+  sheen: 0.28, sheenRoughness: 0.9
+});
+const matInner = new THREE.MeshPhysicalMaterial({
+  color: PAPER.clone(), roughness: 0.92, metalness: 0,
+  sheen: 0.45, sheenRoughness: 1, sheenColor: new THREE.Color('#fff3e0')
+});
+const matEdge  = new THREE.MeshStandardMaterial({
+  color: PAPER_EDGE.clone(), roughness: 0.82, metalness: 0
+});
+matOuter.name = 'exterieur'; matInner.name = 'interieur'; matEdge.name = 'tranche';
+// Tracé "fat lines" : épaisseur constante en pixels, anticrénelé (fini le 1px crénelé)
+const { LineSegments2 } = await import('three/addons/lines/LineSegments2.js');
+const { LineSegmentsGeometry } = await import('three/addons/lines/LineSegmentsGeometry.js');
+const { LineMaterial } = await import('three/addons/lines/LineMaterial.js');
+const lineInk  = new LineMaterial({ color: 0x3d434f, linewidth: 1.3, transparent: true, worldUnits: false });
+const lineBlue = new LineMaterial({ color: 0x5B8DD6, linewidth: 1.1, transparent: true, worldUnits: false, dashed: true, dashSize: 0.06, gapSize: 0.04 });
+
+// ---- dimensions du coffret ----
+const W = 1.6, D = 1.1, H = 0.56, T = 0.026;
+const LID_D = D + 0.022, LIP = 0.24, EPS = 0.002;
+const LY = T / 2 + 0.0018;
+
+function edgePts(w, d, side) {
+  const x = w / 2, z = d / 2;
+  if (side === 'n') return [[-x, LY, -z], [x, LY, -z]];
+  if (side === 's') return [[-x, LY, z], [x, LY, z]];
+  if (side === 'w') return [[-x, LY, -z], [-x, LY, z]];
+  return [[x, LY, -z], [x, LY, z]];
+}
+function makePanel(w, d, hinges, name) {
+  const g = new THREE.Group();
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, T, d), [matEdge, matEdge, matInner, matOuter, matEdge, matEdge]);
+  mesh.castShadow = true; mesh.name = name;
+  g.add(mesh);
+  const solid = [], dash = [];
+  for (const s of ['n', 's', 'w', 'e']) {
+    (hinges.includes(s) ? dash : solid).push(...edgePts(w, d, s).flat());
+  }
+  for (const [arr, mat] of [[solid, lineInk], [dash, lineBlue]]) {
+    if (!arr.length) continue;
+    const geo = new LineSegmentsGeometry();
+    geo.setPositions(arr);
+    const ls = new LineSegments2(geo, mat);
+    ls.computeLineDistances();
+    g.add(ls);
+  }
+  return g;
+}
+
+const root = new THREE.Group();
+scene.add(root);
+root.add(makePanel(W, D, ['n', 's', 'w', 'e'], 'fond'));
+
+const frontPiv = new THREE.Group(); frontPiv.position.set(0, 0, D / 2 + EPS);
+const front = makePanel(W, H, ['n'], 'face_avant'); front.position.z = H / 2;
+frontPiv.add(front); root.add(frontPiv);
+
+const backPiv = new THREE.Group(); backPiv.position.set(0, 0, -(D / 2 + EPS));
+const back = makePanel(W, H, ['s'], 'face_arriere'); back.position.z = -H / 2;
+backPiv.add(back); root.add(backPiv);
+
+const lidPiv = new THREE.Group(); lidPiv.position.set(0, 0, -H);
+const lid = makePanel(W, LID_D, ['s'], 'couvercle'); lid.position.z = -LID_D / 2;
+lidPiv.add(lid); backPiv.add(lidPiv);
+
+const lipPiv = new THREE.Group(); lipPiv.position.set(0, 0, -LID_D);
+const lip = makePanel(W, LIP, ['s'], 'rabat'); lip.position.z = -LIP / 2;
+lipPiv.add(lip); lidPiv.add(lipPiv);
+
+const leftPiv = new THREE.Group(); leftPiv.position.set(-(W / 2 + EPS), 0, 0);
+const left = makePanel(H, D, ['e'], 'cote_gauche'); left.position.x = -H / 2;
+leftPiv.add(left); root.add(leftPiv);
+
+const rightPiv = new THREE.Group(); rightPiv.position.set(W / 2 + EPS, 0, 0);
+const right = makePanel(H, D, ['w'], 'cote_droit'); right.position.x = H / 2;
+rightPiv.add(right); root.add(rightPiv);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -T / 2 - 0.002;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Ombre de contact : le noir dense juste sous l'objet, que la shadow map seule ne donne pas
+const contactTex = (() => {
+  const px = 256, c = document.createElement('canvas'); c.width = c.height = px;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, px / 2);
+  grd.addColorStop(0, 'rgba(0,0,0,0.55)');
+  grd.addColorStop(0.42, 'rgba(0,0,0,0.26)');
+  grd.addColorStop(0.72, 'rgba(0,0,0,0.07)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, px, px);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const contact = new THREE.Mesh(
+  new THREE.PlaneGeometry(1, 1),
+  new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, opacity: 0, depthWrite: false })
+);
+contact.rotation.x = -Math.PI / 2;
+contact.position.y = -T / 2 + 0.0012;
+contact.renderOrder = -1;
+scene.add(contact);
+
+// ---- animation ----
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const smooth = t => t * t * (3 - 2 * t);
+const seg = (p, a, b) => smooth(clamp((p - a) / (b - a), 0, 1));
+const CAM_A = new THREE.Vector3(0, 5.45, 0.07), CAM_B = new THREE.Vector3(3.1, 1.92, 3.7);
+const DIR_A = CAM_A.clone().normalize(), DIR_B = CAM_B.clone().normalize();
+const camDir = new THREE.Vector3();
+const fitBox = new THREE.Box3(), fitSphere = new THREE.Sphere();
+const TGT_A = new THREE.Vector3(0, 0, 0), TGT_B = new THREE.Vector3(0, 0.2, 0);
+const camPos = new THREE.Vector3(), camTgt = new THREE.Vector3();
+let pT = 0, p = 0, thT = 0, th = 0;
+const cfg = { autorotate: true };
+const standalone = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+
+window.addEventListener('message', ev => {
+  const d = ev.data || {};
+  if (d.mp === 'fold') pT = clamp(+d.p || 0, 0, 1);
+  else if (d.mp === 'drag') thT += (+d.dx || 0) * 0.0052;
+  else if (d.mp === 'cfg') {
+    if (d.color) outerCol = new THREE.Color(d.color);
+    if (d.ink) lineInk.color.set(d.ink);
+    if (d.crease) lineBlue.color.set(d.crease);
+    if (typeof d.autorotate === 'boolean') cfg.autorotate = d.autorotate;
+  }
+});
+
+function resize() {
+  const w = wrap.clientWidth || 2, h = wrap.clientHeight || 2;
+  renderer.setSize(w, h, false);
+  const pr = renderer.getPixelRatio();
+  lineInk.resolution.set(w * pr, h * pr);
+  lineBlue.resolution.set(w * pr, h * pr);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(wrap);
+resize();
+
+const t0 = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (standalone) pT = 0.5 - 0.5 * Math.cos((now - t0) * 0.00035);
+  p += (pT - p) * 0.11;
+  if (cfg.autorotate && p > 0.96) thT += 0.0011;
+  th += (thT - th) * 0.1;
+
+  const sTh = seg(p, 0.06, 0.44) * Math.PI / 2;
+  const fTh = seg(p, 0.22, 0.62) * Math.PI / 2;
+  leftPiv.rotation.z = -sTh; rightPiv.rotation.z = sTh;
+  frontPiv.rotation.x = -fTh; backPiv.rotation.x = fTh;
+  lidPiv.rotation.x = seg(p, 0.54, 0.84) * Math.PI / 2;
+  lipPiv.rotation.x = seg(p, 0.76, 0.95) * Math.PI / 2;
+  root.rotation.y = th;
+
+  const mo = seg(p, 0.5, 0.92);
+  matOuter.color.lerpColors(PAPER, outerCol, mo);
+  matInner.color.lerpColors(PAPER, KRAFT, mo);
+  matEdge.color.lerpColors(PAPER_EDGE, wrapOf(outerCol), mo);
+  const lo = 1 - seg(p, 0.55, 0.9);
+  lineInk.opacity = 0.75 * lo;
+  lineBlue.opacity = lo;
+  ground.material.opacity = 0.05 + 0.13 * seg(p, 0.3, 0.85);
+  // l'empreinte se resserre à mesure que le tracé se referme en volume
+  const cw = 3.6 - 1.75 * seg(p, 0.1, 0.9);
+  contact.scale.set(W * cw, D * cw * 1.15, 1);
+  contact.material.opacity = 0.3 + 0.5 * seg(p, 0.15, 0.9);
+
+  // Cadrage automatique : la sphère englobante change beaucoup entre le plan à plat
+  // et le volume fermé — on recalcule la distance à chaque image pour rester cadré.
+  const pc = smooth(p);
+  root.updateWorldMatrix(true, true);
+  fitBox.setFromObject(root);
+  fitBox.getBoundingSphere(fitSphere);
+  camDir.copy(DIR_A).lerp(DIR_B, pc).normalize();
+  const vFov = camera.fov * Math.PI / 180;
+  const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+  const fit = Math.min(Math.sin(vFov / 2), Math.sin(hFov / 2));
+  const dist = fitSphere.radius / Math.max(0.05, fit) * 1.04;
+  camTgt.copy(fitSphere.center).lerp(TGT_B, 0.12 * pc);
+  camPos.copy(camTgt).addScaledVector(camDir, dist);
+  camera.position.copy(camPos);
+  camera.lookAt(camTgt);
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(frame);
+try { window.parent.postMessage({ mp: 'ready' }, '*'); } catch (e) {}
+</script>
+</body>
+</html>

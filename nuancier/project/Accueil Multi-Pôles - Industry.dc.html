@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-2e7daf08-e4e7-44af-8618-bd97124e388a/styles.css">
+<script src="_ds/industry-2e7daf08-e4e7-44af-8618-bd97124e388a/_ds_bundle.js"></script>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;-webkit-font-smoothing:antialiased}
+a{color:var(--color-accent);text-decoration:none}
+a:hover{color:var(--color-accent-700)}
+::selection{background:var(--color-accent);color:var(--color-bg)}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+input::placeholder{color:color-mix(in srgb,var(--color-text) 45%,transparent)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+</style>
+<script src="image-slot.js"></script>
+</helmet>
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-divider)">
+  <div style="max-width:1440px;margin:0 auto;padding:0 var(--space-8);height:66px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-6)">
+    <a href="#" style="display:flex;align-items:center;gap:var(--space-3);color:var(--color-text)">
+      <span style="width:9px;height:9px;background:var(--color-accent);display:block"></span>
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:21px;letter-spacing:.01em">MULTI-PÔLES</span>
+      <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);padding-left:var(--space-2)">Carton · PLV · Packaging</span>
+    </a>
+    <nav style="display:flex;align-items:center;gap:var(--space-8)">
+      <a href="#galerie" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text)">Réalisations</a>
+      <a href="#atelier" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text)">Outils</a>
+      <a href="#industrie" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text)">Le groupe</a>
+      <a href="#devis" class="btn btn-primary blueprint" style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:11px 18px">Chiffrer un projet<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
+    </nav>
+  </div>
+</header>
+
+<section id="hero" data-screen-label="Héro — pliage 3D" ref="{{ trackRef }}" style="height:290vh;position:relative">
+  <div style="position:sticky;top:0;height:100vh;overflow:hidden">
+    <iframe src="fold-hero.html" title="Tracé de découpe qui se plie en coffret" ref="{{ frameRef }}" onLoad="{{ onFrameLoad }}" style="position:absolute;top:0;left:26%;width:74%;height:100%;border:0;pointer-events:none;z-index:1"></iframe>
+    <div onPointerDown="{{ dragDown }}" onPointerMove="{{ dragMove }}" onPointerUp="{{ dragUp }}" style="position:absolute;left:40%;right:0;top:12%;bottom:10%;z-index:3;cursor:grab;touch-action:pan-y"></div>
+    <div style="position:absolute;left:clamp(24px,4vw,72px);top:17vh;z-index:4;max-width:660px;pointer-events:none;animation:fadeUp .9s ease both">
+      <h6 style="color:var(--color-accent);margin:0 0 var(--space-4)">01 — Bureau d'études &amp; production carton</h6>
+      <h1 style="font-size:clamp(42px,4.7vw,78px);margin:0;text-wrap:balance">L'ingénierie du carton. Du plan technique au <span style="color:var(--color-accent-700)">volume d'exception.</span></h1>
+      <p style="margin:var(--space-6) 0 0;font-size:18px;max-width:44ch;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Conception sur-mesure et production industrielle. 6&nbsp;usines certifiées Éco&nbsp;&amp;&nbsp;Pharma.</p>
+      <div style="margin-top:var(--space-8);display:flex;gap:var(--space-4);pointer-events:auto">
+        <a href="#devis" class="btn btn-primary blueprint" style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:14px 22px">Chiffrer un projet<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></a>
+        <a href="#galerie" class="btn btn-secondary" style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:14px 22px;color:var(--color-text)">Voir les volumes ↓</a>
+      </div>
+    </div>
+    <div class="blueprint" style="position:absolute;right:52px;bottom:52px;z-index:4;pointer-events:none;min-width:280px;background:color-mix(in srgb,var(--color-bg) 92%,transparent)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:grid;grid-template-columns:96px 1fr;border-bottom:1px solid var(--color-divider)">
+        <div style="padding:7px var(--space-3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);border-right:1px solid var(--color-divider)">Projet</div>
+        <div style="padding:7px var(--space-3);font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700">Coffret rigide</div>
+      </div>
+      <div style="display:grid;grid-template-columns:96px 1fr;border-bottom:1px solid var(--color-divider)">
+        <div style="padding:7px var(--space-3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);border-right:1px solid var(--color-divider)">Matière</div>
+        <div style="padding:7px var(--space-3);font-size:11px;letter-spacing:.09em;text-transform:uppercase">Carton compact 2,4 mm</div>
+      </div>
+      <div style="display:grid;grid-template-columns:96px 1fr;border-bottom:1px solid var(--color-divider)">
+        <div style="padding:7px var(--space-3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);border-right:1px solid var(--color-divider)">Format</div>
+        <div style="padding:7px var(--space-3);font-size:11px;letter-spacing:.09em;text-transform:uppercase">160 × 110 × 55 mm</div>
+      </div>
+      <div style="display:grid;grid-template-columns:96px 1fr">
+        <div style="padding:7px var(--space-3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);border-right:1px solid var(--color-divider)">Pliage</div>
+        <div style="padding:7px var(--space-3);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--color-accent-700);font-weight:700"><span ref="{{ pctRef }}">000 %</span></div>
+      </div>
+    </div>
+    <div ref="{{ hintRef }}" style="position:absolute;left:clamp(24px,4vw,72px);bottom:52px;z-index:4;pointer-events:none;display:flex;flex-direction:column;gap:var(--space-3);transition:opacity .4s;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">
+      <span>▾ Faites défiler — le tracé se plie</span>
+      <span style="display:block;width:150px;height:2px;background:var(--color-neutral-300)"><span ref="{{ barRef }}" style="display:block;width:0%;height:2px;background:var(--color-accent)"></span></span>
+    </div>
+  </div>
+</section>
+
+<section id="galerie" data-screen-label="Galerie des volumes" style="max-width:1280px;margin:0 auto;padding:150px var(--space-8) 130px">
+  <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:var(--space-6);margin-bottom:60px">
+    <div>
+      <h6 style="color:var(--color-accent);margin:0 0 var(--space-4)">02 — Galerie des volumes</h6>
+      <h2 style="font-size:clamp(32px,3.3vw,54px);margin:0">L'art du pliage et de la structure</h2>
+    </div>
+    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);text-align:right;line-height:1.9">Matière : 100 % carton<br>Photos studio — lumière douce</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-8)">
+    <figure style="margin:0;grid-column:1 / span 7">
+      <div class="blueprint duotone" style="aspect-ratio:4/3;background:var(--color-surface)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <image-slot id="fig-plv" shape="rect" fit="cover" placeholder="Photo studio — PLV de sol architecturale, carton ondulé emboîté"></image-slot>
+      </div>
+      <figcaption style="margin-top:var(--space-4);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Fig. 01 — PLV de sol · emboîtement ondulé, sans attache extérieure</figcaption>
+    </figure>
+    <figure style="margin:90px 0 0;grid-column:8 / span 5">
+      <div class="blueprint duotone" style="aspect-ratio:1/1;background:var(--color-surface)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <image-slot id="fig-coffret" shape="rect" fit="cover" placeholder="Photo studio — coffret ouvert : extérieur imprimé, intérieur kraft brut"></image-slot>
+      </div>
+      <figcaption style="margin-top:var(--space-4);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Fig. 02 — Coffret d'exception · extérieur imprimé, intérieur kraft</figcaption>
+    </figure>
+    <div style="grid-column:1 / span 4;align-self:end;padding-bottom:var(--space-2)">
+      <p style="margin:0;font-size:16px;max-width:32ch;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Structures autoportantes, pliages millimétrés, gaufrages : ici, la technique sert l'esthétique.</p>
+    </div>
+    <figure style="margin:60px 0 0;grid-column:5 / span 4">
+      <div class="blueprint duotone" style="aspect-ratio:3/4;background:var(--color-surface)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <image-slot id="fig-etuis" shape="rect" fit="cover" placeholder="Photo macro — étuis blancs : découpe, rainurage, gaufrage"></image-slot>
+      </div>
+      <figcaption style="margin-top:var(--space-4);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Fig. 03 — Étuis pharma &amp; cosmétique · précision de découpe (macro)</figcaption>
+    </figure>
+    <div class="card blueprint" style="grid-column:10 / span 3;align-self:center;padding:var(--space-6)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <svg viewBox="0 0 460 420" style="width:100%;height:auto;display:block" fill="none">
+        <path d="M95,213 L95,323 L150,323 L150,378 L310,378 L310,323 L365,323 L365,213 L310,213 L310,10 L150,10 L150,213 Z" stroke="var(--color-accent)" stroke-width="3"></path>
+        <g stroke="var(--color-accent)" stroke-width="2" stroke-dasharray="9 7" opacity=".5">
+          <line x1="150" y1="46" x2="310" y2="46"></line>
+          <line x1="150" y1="158" x2="310" y2="158"></line>
+          <line x1="150" y1="213" x2="310" y2="213"></line>
+          <line x1="150" y1="323" x2="310" y2="323"></line>
+          <line x1="150" y1="213" x2="150" y2="323"></line>
+          <line x1="310" y1="213" x2="310" y2="323"></line>
+        </g>
+      </svg>
+      <div class="card-meta" style="margin-top:var(--space-4);letter-spacing:.11em;text-transform:uppercase;line-height:1.8;display:block">Chaque volume<br>commence par son tracé.</div>
+    </div>
+  </div>
+</section>
+
+<section id="atelier" data-screen-label="Atelier numérique" style="background:var(--color-surface);border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);padding:130px var(--space-8)">
+  <div style="max-width:1280px;margin:0 auto">
+    <h6 style="color:var(--color-accent);margin:0 0 var(--space-4)">03 — L'atelier numérique</h6>
+    <h2 style="font-size:clamp(32px,3.3vw,54px);margin:0">Concevez, prévisualisez, validez.</h2>
+    <p style="margin:var(--space-6) 0 0;font-size:17px;max-width:62ch;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Des services de préproduction pensés pour les chefs de projet : partez d'un tracé aux bonnes cotes, validez un volume fidèle avant production.</p>
+    <div style="display:grid;grid-template-columns:7fr 5fr;gap:var(--space-8);margin-top:60px;align-items:stretch">
+      <div class="blueprint" style="background:var(--color-bg);display:flex;flex-direction:column">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider);font-size:11px;letter-spacing:.12em;text-transform:uppercase">
+          <span style="font-weight:700">MP·Tracé — générateur de dielines</span>
+          <span style="color:color-mix(in srgb,var(--color-text) 55%,transparent)">V4.2 — connecté</span>
+        </div>
+        <div style="display:flex;gap:var(--space-6);padding:var(--space-2) var(--space-4);border-bottom:1px solid var(--color-divider);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">
+          <span>Fichier</span><span>Édition</span><span>Affichage</span><span>Cotation</span><span>Export</span>
+        </div>
+        <div style="display:flex;flex:1;min-height:390px">
+          <div style="width:196px;border-right:1px solid var(--color-divider);padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3)">
+            <div class="field">
+              <label>Modèle</label>
+              <div class="input" style="display:flex;align-items:center">Coffret rigide</div>
+            </div>
+            <div class="field">
+              <label>Longueur</label>
+              <div class="input" style="display:flex;align-items:center">160 mm</div>
+            </div>
+            <div class="field">
+              <label>Largeur</label>
+              <div class="input" style="display:flex;align-items:center">110 mm</div>
+            </div>
+            <div class="field">
+              <label>Hauteur</label>
+              <div class="input" style="display:flex;align-items:center">55 mm</div>
+            </div>
+            <div class="field">
+              <label>Carton</label>
+              <div class="input" style="display:flex;align-items:center">Compact 2,4 mm</div>
+            </div>
+            <div class="btn btn-primary btn-block blueprint" style="margin-top:auto;font-size:11px;letter-spacing:.11em;text-transform:uppercase">Générer le tracé<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+          </div>
+          <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background-image:linear-gradient(color-mix(in srgb,var(--color-accent) 9%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 9%,transparent) 1px,transparent 1px);background-size:14px 14px">
+            <svg viewBox="-10 -34 490 476" style="width:74%;height:auto" fill="none">
+              <path d="M95,213 L95,323 L150,323 L150,378 L310,378 L310,323 L365,323 L365,213 L310,213 L310,10 L150,10 L150,213 Z" stroke="var(--color-text)" stroke-width="1.6"></path>
+              <g stroke="var(--color-accent)" stroke-width="1.1" stroke-dasharray="6 4">
+                <line x1="150" y1="46" x2="310" y2="46"></line>
+                <line x1="150" y1="158" x2="310" y2="158"></line>
+                <line x1="150" y1="213" x2="310" y2="213"></line>
+                <line x1="150" y1="323" x2="310" y2="323"></line>
+                <line x1="150" y1="213" x2="150" y2="323"></line>
+                <line x1="310" y1="213" x2="310" y2="323"></line>
+              </g>
+              <g stroke="var(--color-neutral-500)" stroke-width=".9">
+                <line x1="150" y1="-16" x2="310" y2="-16"></line>
+                <line x1="146" y1="-12" x2="154" y2="-20"></line>
+                <line x1="306" y1="-12" x2="314" y2="-20"></line>
+                <line x1="384" y1="213" x2="384" y2="323"></line>
+                <line x1="380" y1="217" x2="388" y2="209"></line>
+                <line x1="380" y1="327" x2="388" y2="319"></line>
+                <line x1="322" y1="323" x2="322" y2="378"></line>
+                <line x1="318" y1="327" x2="326" y2="319"></line>
+                <line x1="318" y1="382" x2="326" y2="374"></line>
+              </g>
+              <g fill="var(--color-neutral-700)" style="font-family:var(--font-body);font-size:12px;font-weight:500">
+                <text x="219" y="-24">160</text>
+                <text x="392" y="272">110</text>
+                <text x="330" y="354">55</text>
+              </g>
+              <g fill="var(--color-neutral-400)" style="font-family:var(--font-body);font-size:10px;letter-spacing:.09em" text-anchor="middle">
+                <text x="230" y="272">FOND</text>
+                <text x="230" y="354">AVANT</text>
+                <text x="230" y="190">ARRIÈRE</text>
+                <text x="230" y="100">COUVERCLE</text>
+                <text x="230" y="32">RABAT</text>
+                <text x="122" y="272">CÔTÉ</text>
+                <text x="338" y="272">CÔTÉ</text>
+              </g>
+              <text x="95" y="404" fill="var(--color-accent-700)" style="font-family:var(--font-body);font-size:11px;letter-spacing:.1em">RÉF. MP-COFFRET-160 — ÉCH 1:1</text>
+            </svg>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--color-divider);padding:var(--space-2) var(--space-4);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">
+          <span>Zone 460 × 420 mm</span>
+          <span>6 panneaux — tracé conforme</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-8)">
+        <a href="#devis" class="card blueprint" style="flex:1;padding:var(--space-8);color:var(--color-text)" style-hover="background:color-mix(in srgb,var(--color-accent) 6%,transparent)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <span class="card-kicker">Outil 01</span>
+          <span class="card-title" style="font-size:24px">Générateur de tracés</span>
+          <span class="card-body" style="font-size:15px">Accédez à notre bibliothèque de dielines paramétriques pour démarrer votre projet avec les bonnes cotes.</span>
+          <span style="margin-top:var(--space-6);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--color-accent-700)">Ouvrir l'outil →</span>
+        </a>
+        <a href="#devis" class="card blueprint" style="flex:1;padding:var(--space-8);color:var(--color-text)" style-hover="background:color-mix(in srgb,var(--color-accent) 6%,transparent)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <span class="card-kicker">Outil 02</span>
+          <span class="card-title" style="font-size:24px">Studio 3D</span>
+          <span class="card-body" style="font-size:15px">Importez vos décors et validez vos volumes en temps réel avant le lancement en production.</span>
+          <span style="margin-top:var(--space-6);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--color-accent-700)">Ouvrir l'outil →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="industrie" data-screen-label="Force industrielle" style="max-width:1280px;margin:0 auto;padding:150px var(--space-8) 110px">
+  <div style="display:grid;grid-template-columns:5fr 6fr;gap:64px;align-items:center">
+    <div>
+      <div style="font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-bottom:var(--space-4)">Implantations — France métropolitaine</div>
+      <div class="blueprint" style="padding:var(--space-3)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <iframe src="france-map.html?fill=e9e9ea&amp;stroke=1d1f20&amp;mark=416180&amp;halo=f2f2f3" title="Carte des 6 sites de production en France" style="width:100%;aspect-ratio:14/15;border:0;pointer-events:none;display:block"></iframe>
+      </div>
+    </div>
+    <div>
+      <h6 style="color:var(--color-accent);margin:0 0 var(--space-4)">04 — La force industrielle</h6>
+      <h2 style="font-size:clamp(32px,3.3vw,54px);margin:0">6 usines expertes. Zéro compromis sur la qualité.</h2>
+      <p style="margin:var(--space-6) 0 0;font-size:17px;max-width:52ch;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Chaque site est spécialisé dans son domaine. Ensemble, ils réunissent plus de 300 personnes et couvrent toute la chaîne du carton.</p>
+      <div style="margin-top:var(--space-8)">
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">01</span>
+          <span style="font-size:17px;font-weight:500">Impression offset &amp; numérique</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Hauts-de-France</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">02</span>
+          <span style="font-size:17px;font-weight:500">Cartonnage &amp; contrecollage</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Normandie</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">03</span>
+          <span style="font-size:17px;font-weight:500">Bureau d'études &amp; prototypage</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Île-de-France</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">04</span>
+          <span style="font-size:17px;font-weight:500">Carton ondulé &amp; PLV</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Pays de la Loire</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">05</span>
+          <span style="font-size:17px;font-weight:500">Façonnage &amp; ennoblissement</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Auvergne-Rhône-Alpes</span>
+        </div>
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:var(--space-4);align-items:baseline;padding:var(--space-4) 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+          <span style="font-size:12px;font-weight:700;color:var(--color-accent-700)">06</span>
+          <span style="font-size:17px;font-weight:500">Coffrets &amp; volumes d'exception</span>
+          <span style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Nouvelle-Aquitaine</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:110px;border-top:1px solid var(--color-text);border-bottom:1px solid var(--color-text);padding:var(--space-8) 0;display:flex;align-items:center;gap:44px;flex-wrap:wrap">
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);line-height:2;min-width:150px">Certifications<br>Éco &amp; Pharma</div>
+    <div style="display:flex;gap:var(--space-6);flex-wrap:wrap">
+      <div class="blueprint" style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em;line-height:1.35">FSC®<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+      <div class="blueprint" style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em;line-height:1.35">PEFC<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+      <div class="blueprint" style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em;line-height:1.35">Imprim'<br>Vert<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+      <div class="blueprint" style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em;line-height:1.35;border-color:var(--color-accent);color:var(--color-accent-700)">ISO<br>15378<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+      <div class="blueprint" style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em;line-height:1.35;border-color:var(--color-accent);color:var(--color-accent-700)">BPF<br>Pharma<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+    </div>
+    <p style="margin:0;flex:1;min-width:280px;font-size:15px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Des tirages industriels aux notices imprimées sur papier ultra-fin, nos lignes répondent aux exigences des marchés Éco comme Pharma.</p>
+  </div>
+</section>
+
+<section id="devis" data-screen-label="Votre projet + pied de page" style="background:var(--color-accent-900);color:var(--color-bg)">
+  <div style="max-width:1180px;margin:0 auto;padding:130px var(--space-8) 46px">
+    <h6 style="color:var(--color-accent-300);margin:0 0 var(--space-4)">05 — Votre projet</h6>
+    <h2 style="font-size:clamp(34px,3.7vw,58px);margin:0;color:var(--color-bg);max-width:20ch">Vous avez un projet de packaging ou de PLV&nbsp;?</h2>
+    <p style="margin:var(--space-6) 0 0;font-size:17px;max-width:58ch;color:color-mix(in srgb,var(--color-bg) 68%,transparent)">Indiquez vos dimensions ou déposez votre propre tracé : notre bureau d'études vous répond avec un chiffrage et des recommandations techniques.</p>
+    <div style="margin-top:54px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-6)">
+      <div class="field">
+        <label style="color:color-mix(in srgb,var(--color-bg) 62%,transparent);letter-spacing:.12em;text-transform:uppercase;font-size:10px">Dimensions (L × l × H, mm)</label>
+        <input type="text" class="input" placeholder="160 × 110 × 55" style="background:transparent;border-color:color-mix(in srgb,var(--color-bg) 28%,transparent);color:var(--color-bg);min-height:46px">
+      </div>
+      <div class="field">
+        <label style="color:color-mix(in srgb,var(--color-bg) 62%,transparent);letter-spacing:.12em;text-transform:uppercase;font-size:10px">Quantité envisagée</label>
+        <input type="text" class="input" placeholder="5 000" style="background:transparent;border-color:color-mix(in srgb,var(--color-bg) 28%,transparent);color:var(--color-bg);min-height:46px">
+      </div>
+      <div class="field">
+        <label style="color:color-mix(in srgb,var(--color-bg) 62%,transparent);letter-spacing:.12em;text-transform:uppercase;font-size:10px">Email professionnel</label>
+        <input type="email" class="input" placeholder="prenom@societe.fr" style="background:transparent;border-color:color-mix(in srgb,var(--color-bg) 28%,transparent);color:var(--color-bg);min-height:46px">
+      </div>
+      <div style="grid-column:1 / -1;border:1px dashed color-mix(in srgb,var(--color-bg) 34%,transparent);padding:var(--space-8);text-align:center;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:color-mix(in srgb,var(--color-bg) 62%,transparent)">Déposez votre tracé ou plan — .pdf, .ai, .dxf (facultatif)</div>
+      <div style="grid-column:1 / -1;display:flex;align-items:center;gap:var(--space-6);flex-wrap:wrap">
+        <button type="button" class="btn btn-primary blueprint" style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:16px 28px;background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-900)">Chiffrer mon projet →<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></button>
+        <span style="font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:color-mix(in srgb,var(--color-bg) 48%,transparent)">Transmis directement au bureau d'études</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid color-mix(in srgb,var(--color-bg) 20%,transparent);margin-top:96px;padding-top:var(--space-8);display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-6);flex-wrap:wrap">
+      <div>
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <span style="width:8px;height:8px;background:var(--color-accent-300);display:block"></span>
+          <span style="font-family:var(--font-heading);font-weight:600;font-size:18px;color:var(--color-bg)">MULTI-PÔLES</span>
+        </div>
+        <div style="margin-top:var(--space-3);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:color-mix(in srgb,var(--color-bg) 48%,transparent)">Imprimeur · Cartonnier · Fabricant · Volumiste</div>
+      </div>
+      <nav style="display:flex;gap:var(--space-8);font-size:11px;letter-spacing:.11em;text-transform:uppercase">
+        <a href="#galerie" style="color:color-mix(in srgb,var(--color-bg) 68%,transparent)" style-hover="color:var(--color-bg)">Réalisations</a>
+        <a href="#atelier" style="color:color-mix(in srgb,var(--color-bg) 68%,transparent)" style-hover="color:var(--color-bg)">Outils</a>
+        <a href="#industrie" style="color:color-mix(in srgb,var(--color-bg) 68%,transparent)" style-hover="color:var(--color-bg)">Le groupe</a>
+        <a href="#devis" style="color:color-mix(in srgb,var(--color-bg) 68%,transparent)" style-hover="color:var(--color-bg)">Contact</a>
+      </nav>
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-bg) 48%,transparent)">© 2026 Multi-Pôles — Mentions légales</div>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;couleurCoffret&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#41617F&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#41617F&quot;, &quot;#2C455D&quot;, &quot;#5980A6&quot;, &quot;#2b2b2d&quot;], &quot;section&quot;: &quot;Coffret 3D&quot;},
+  &quot;rotationAuto&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Coffret 3D&quot;}
+}">
+class Component extends DCLogic {
+  trackRef = React.createRef();
+  frameRef = React.createRef();
+  pctRef = React.createRef();
+  barRef = React.createRef();
+  hintRef = React.createRef();
+
+  componentDidMount() {
+    this.raf = 0;
+    this.onScroll = () => {
+      if (!this.raf) this.raf = requestAnimationFrame(() => { this.raf = 0; this.push(); });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll, { passive: true });
+    this.push();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    cancelAnimationFrame(this.raf);
+  }
+  componentDidUpdate() { this.sendCfg(); }
+
+  send(msg) {
+    const w = this.frameRef.current && this.frameRef.current.contentWindow;
+    if (w) w.postMessage(msg, '*');
+  }
+  sendCfg() {
+    // Le coffret et les lignes de tracé prennent l'acier du système Industry
+    this.send({
+      mp: 'cfg',
+      color: this.props.couleurCoffret ?? '#41617F',
+      ink: '#1d1f20',
+      crease: '#5980a6',
+      autorotate: this.props.rotationAuto ?? true
+    });
+  }
+  push() {
+    const t = this.trackRef.current;
+    if (!t) return;
+    const r = t.getBoundingClientRect();
+    const d = r.height - window.innerHeight;
+    const p = Math.max(0, Math.min(1, d > 0 ? -r.top / d : 0));
+    this.send({ mp: 'fold', p });
+    if (this.pctRef.current) this.pctRef.current.textContent = String(Math.round(p * 100)).padStart(3, '0') + ' %';
+    if (this.barRef.current) this.barRef.current.style.width = (p * 100) + '%';
+    if (this.hintRef.current) this.hintRef.current.style.opacity = p > 0.04 ? '0' : '1';
+  }
+  renderVals() {
+    return {
+      trackRef: this.trackRef, frameRef: this.frameRef, pctRef: this.pctRef, barRef: this.barRef, hintRef: this.hintRef,
+      onFrameLoad: () => { this.sendCfg(); this.push(); },
+      dragDown: (e) => {
+        this.dragging = true; this.dragX = e.clientX;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        e.currentTarget.style.cursor = 'grabbing';
+      },
+      dragMove: (e) => {
+        if (!this.dragging) return;
+        this.send({ mp: 'drag', dx: e.clientX - this.dragX });
+        this.dragX = e.clientX;
+      },
+      dragUp: (e) => { this.dragging = false; e.currentTarget.style.cursor = 'grab'; }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

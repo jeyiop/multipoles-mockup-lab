@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Présentoir de comptoir à escalier — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="34" y="14" width="32" height="12" fill="#f4f1e9"/>
+    <rect x="46" y="10" width="8" height="20" fill="#0f8a4f"/>
+    <rect x="34" y="17" width="32" height="5" fill="#0f8a4f"/>
+    <g fill="#f4f1e9">
+      <rect x="26" y="34" width="48" height="10"/>
+      <rect x="26" y="48" width="48" height="10"/>
+      <rect x="26" y="62" width="48" height="10"/>
+      <rect x="26" y="76" width="48" height="10"/>
+    </g>
+    <g fill="#0f8a4f">
+      <rect x="26" y="41" width="48" height="3"/>
+      <rect x="26" y="55" width="48" height="3"/>
+      <rect x="26" y="69" width="48" height="3"/>
+      <rect x="26" y="83" width="48" height="3"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "PRE-CPT-PH-16",
+  "famille": "PLV",
+  "type": "presentoir de comptoir a escalier 4 marches",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "matiere": "carton compact blanc recto/verso",
+  "cannelure": "simple",
+  "epaisseur_mm": 3,
+  "hors_tout_mm": { "l": 150, "p": 160, "h": 255 },
+  "corps_mm": { "l": 150, "p": 160, "h": 184 },
+  "escalier": { "marches": 4, "entraxe_mm": 38, "hauteur_marche_mm": 38, "retour_avant_mm": 22 },
+  "joue": { "construction": "doublage 2 plis colles", "profil": "biseau, une seule coupe droite parallele a la pente", "epaisseur_vue_mm": 6, "faces": 2 },
+  "fronton_mm": { "l": 150, "h": 252, "decoupe": "arche", "aligne_sur_flancs": true },
+  "chargement": { "facings": 4, "marches": 4, "rangs": 1, "capacite": 16,
+                  "produit": "pack sirop",
+                  "produit_mm": { "l": 34, "p": 34, "h": 75 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-comptoir-escalier-4-marches-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — présentoir de comptoir à escalier, 4 marches</b>
+  <span>emprise 15 × 16 cm · H 25,5 cm hors tout · 4 marches, entraxe 3,8 cm, hauteur de marche 3,8 cm · retour avant 22 mm · joues doublées 2 plis à profil biseauté (6 mm vus) · fronton 15 cm aligné sur les joues · 4 facings serrés × 4 marches = 16 packs sirop 34 × 34 × 75 mm · carton blanc 3 mm, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const T = 0.003;                     // épaisseur simple cannelure 3 mm
+const W = 0.15;                      // largeur hors tout
+const D = 0.16;                      // profondeur hors tout
+const MARCHE_D = (D - 3 * T) / 4;    // entraxe des marches
+const RISE = 0.038;                  // hauteur d'une marche
+const CLEAR = W - 4 * T;             // largeur utile entre joues doublées
+const RET_AV = 0.022;                // retour avant
+const PACK_H = 0.075;
+const PACK = 0.034;
+const FACINGS = 4;                   // facings serrés sur la largeur utile
+const RANGS = 1;                     // rangs par marche
+const COL_W = CLEAR / FACINGS;
+const BASE = n => T + (n - 1) * RISE;                  // dessus de la marche n
+const Z_AV = n => D / 2 - T - MARCHE_D * (n - 1);      // arête avant de la marche n
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const packMat = new THREE.MeshStandardMaterial({ name: 'pack_blanc_maquette', color: 0xe4e2db, roughness: 0.8, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton, pack: packMat };
+
+const plv = new THREE.Group();
+plv.name = 'presentoir_comptoir_escalier_4_marches_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+
+/* ---------- fond + retour avant ---------- */
+plv.add(mesh('car_fond', box(W, T, D), mat.tranche, [0, T / 2, 0]));
+plv.add(mesh('car_retour_avant', box(W, RET_AV, T), mat.blanc, [0, T + RET_AV / 2, D / 2 - T / 2]));
+plv.add(mesh('imp_retour_avant_filet', box(W - 0.004, 0.012, 0.0012), mat.vert, [0, T + 0.010, D / 2 + 0.0006]));
+
+/* ---------- joues doublées : profil biseauté d'une seule coupe droite, parallèle à la pente ---------- */
+const SLOPE = RISE / MARCHE_D;       // pente de l'escalier
+const GUARD = 0.020;                 // garde latérale au-dessus des marches
+const vJoue = z => BASE(1) + T + GUARD + (Z_AV(1) - z) * SLOPE;
+const joue = new THREE.Shape();
+joue.moveTo(D / 2, 0);
+joue.lineTo(-D / 2, 0);
+joue.lineTo(-D / 2, vJoue(-D / 2));
+joue.lineTo(D / 2, vJoue(D / 2));
+joue.closePath();
+const joueGeo = extrude(joue, T);
+[['droite', 1], ['gauche', -1]].forEach(([cote, sx]) => {
+  const x0 = sx > 0 ? W / 2 : -W / 2 + T;
+  plv.add(mesh('car_joue_' + cote, joueGeo, mat.kraft, [x0, 0, 0], [0, -Math.PI / 2, 0]));
+  plv.add(mesh('car_joue_' + cote + '_doublage', joueGeo, mat.tranche, [x0 - sx * T, 0, 0], [0, -Math.PI / 2, 0]));
+});
+
+/* ---------- escalier : 4 dessus de marche + 3 contremarches ---------- */
+for (let n = 1; n <= 4; n++) {
+  plv.add(mesh('car_marche_' + n + '_dessus', box(CLEAR, T, MARCHE_D), mat.tranche,
+    [0, BASE(n) + T / 2, Z_AV(n) - MARCHE_D / 2]));
+  if (n < 4) {
+    plv.add(mesh('car_marche_' + n + '_contremarche', box(CLEAR, RISE, T), mat.blanc,
+      [0, BASE(n) + T + RISE / 2, Z_AV(n) - MARCHE_D - T / 2]));
+    plv.add(mesh('imp_marche_' + n + '_filet', box(CLEAR, 0.010, 0.0012), mat.vert,
+      [0, BASE(n) + T + 0.008, Z_AV(n) - MARCHE_D + 0.0006]));
+  }
+}
+
+/* ---------- dos-fronton : une seule pièce, aligné sur les joues ---------- */
+const F_HW = W / 2;
+const arche = new THREE.Shape();
+arche.moveTo(-F_HW, 0);
+arche.lineTo(F_HW, 0);
+arche.lineTo(F_HW, 0.160);
+arche.quadraticCurveTo(F_HW, 0.200, F_HW - 0.022, 0.215);
+arche.quadraticCurveTo(0, 0.289, -(F_HW - 0.022), 0.215);
+arche.quadraticCurveTo(-F_HW, 0.200, -F_HW, 0.160);
+arche.closePath();
+const archeGeo = extrude(arche, T);
+
+const fronton = new THREE.Group();
+fronton.name = 'car_dos_fronton';
+fronton.position.set(0, T, -D / 2);
+fronton.add(mesh('car_dos_fronton_panneau', archeGeo, mat.blanc, [0, 0, T]));
+fronton.add(mesh('car_dos_fronton_doublage', archeGeo, mat.kraft, [0, 0, 0]));
+fronton.add(mesh('imp_fronton_bandeau', box(W - 0.004, 0.016, 0.0015), mat.vert, [0, 0.203, 2 * T + 0.0008]));
+
+const a = 0.0068, b = 0.018;
+const croix = new THREE.Shape();
+croix.moveTo(-a, -b);
+croix.lineTo(a, -b); croix.lineTo(a, -a); croix.lineTo(b, -a);
+croix.lineTo(b, a);  croix.lineTo(a, a);  croix.lineTo(a, b);
+croix.lineTo(-a, b); croix.lineTo(-a, a); croix.lineTo(-b, a);
+croix.lineTo(-b, -a); croix.lineTo(-a, -a);
+croix.closePath();
+fronton.add(mesh('imp_fronton_croix', extrude(croix, 0.0015), mat.vert, [0, 0.230, 2 * T]));
+
+const patte = box(T, 0.022, 0.022);
+fronton.add(mesh('car_patte_collage_droite', patte, mat.kraft, [W / 2 - 2.5 * T, 0.011, 2 * T + 0.011]));
+fronton.add(mesh('car_patte_collage_gauche', patte, mat.kraft, [-W / 2 + 2.5 * T, 0.011, 2 * T + 0.011]));
+plv.add(fronton);
+
+/* ---------- 4 facings × 4 marches = 16 packs sirop ---------- */
+const packGeo = box(PACK, PACK_H, PACK);
+const etiqGeo = box(0.026, 0.036, 0.0012);
+for (let n = 1; n <= 4; n++) {
+  for (let c = 0; c < FACINGS; c++) {
+    const x = -W / 2 + 2 * T + COL_W * (c + 0.5);
+    for (let r = 0; r < RANGS; r++) {
+      const id = 'prd_sirop_m' + n + '_c' + (c + 1) + '_r' + (r + 1);
+      const g = new THREE.Group();
+      g.name = id;
+      g.position.set(x, BASE(n) + T, Z_AV(n) - PACK / 2 - PACK * r);
+      g.add(mesh(id + '_corps', packGeo, mat.pack, [0, PACK_H / 2, 0]));
+      g.add(mesh(id + '_etiquette', etiqGeo, mat.vert, [0, 0.035, PACK / 2 + 0.0006]));
+      plv.add(g);
+    }
+  }
+}
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

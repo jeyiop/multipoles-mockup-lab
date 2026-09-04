@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boîte à cloche — couvercle court</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  three-d-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;height:100%;background:#efece6}
+  body{font-family:"Instrument Sans",system-ui,sans-serif;color:#2b2620}
+  a{color:#5a5348}
+  a:hover{color:#2b2620}
+  #panel{position:fixed;top:22px;left:24px;z-index:5;width:258px;display:flex;flex-direction:column;gap:12px}
+  #panel h1{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.01em;line-height:1.35}
+  #panel h1 span{display:block;font-size:11px;font-weight:400;color:#7a7367}
+  #phase{display:flex;flex-direction:column;gap:5px}
+  #phase input{width:100%;margin:0;accent-color:#2b2620;height:14px}
+  #phase div{display:flex;justify-content:space-between;font-size:10px;color:#7a7367;letter-spacing:.02em}
+  #phase div b{font-weight:500;color:#2b2620}
+  .row{display:flex;flex-wrap:wrap;gap:4px}
+  .row button{
+    font:inherit;font-size:11.5px;line-height:1;padding:6px 9px;border:1px solid #cfc8bb;
+    border-radius:2px;background:#faf8f4;color:#4a443b;cursor:pointer;
+  }
+  .row button:hover{border-color:#8b8378;color:#2b2620}
+  .row button.primary{background:#2b2620;border-color:#2b2620;color:#faf8f4}
+  .row button.primary:hover{background:#453e35;border-color:#453e35}
+  #note{margin:0;font-size:11px;line-height:1.45;color:#7a7367;text-wrap:pretty}
+  #note b{font-weight:500;color:#4a443b}
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Boîte à cloche — couvercle court<span>Carton compact 1,5 mm · 88 × 88 × 299 mm</span></h1>
+  <div id="phase">
+    <input type="range" id="slider" min="0" max="1" step="0.002" value="0" aria-label="Ouverture du couvercle">
+    <div><span id="l0"><b>Fermée</b></span><span id="l1">Ouverte</span></div>
+  </div>
+  <div class="row">
+    <button type="button" id="play" class="primary">Ouvrir le couvercle</button>
+    <button type="button" id="v34">Vue 3/4</button>
+    <button type="button" id="vhaut">Vue de dessus</button>
+  </div>
+  <p id="note"><b>Deux parties indépendantes, sans languette ni fermeture.</b> Le couvercle descend de 58 mm sur le fond, soit un cinquième de la hauteur ; le maintien vient du jeu de 0,5 mm entre les deux. Angles collés, pas de découpe de rabats.</p>
+</div>
+
+<three-d-stage name="boite-a-cloche" background="#efece6"></three-d-stage>
+<script src="three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const tb = 0.0015, jeu = 0.0005;
+const W1 = 0.084, H1 = 0.297;                 // fond, partie haute
+const W2 = W1 + 2*(tb + jeu), H2 = 0.060;     // couvercle court
+const REVEAL = 0.239, LIFT = 0.095;           // fermé : le couvercle descend de 58 mm sur le fond
+
+const M = {
+  board: new THREE.MeshStandardMaterial({ name:'carton_habille', color:0xf6f3ec, roughness:0.72, metalness:0.02 }),
+  core:  new THREE.MeshStandardMaterial({ name:'tranche_carton', color:0xc8b596, roughness:0.95, metalness:0 })
+};
+const F = (px,nx,py,ny,pz,nz) => [px,nx,py,ny,pz,nz];
+const wallZ = F(M.core, M.core, M.core, M.core, M.board, M.board);   // épaisseur suivant z
+const wallX = F(M.board, M.board, M.core, M.core, M.core, M.core);   // épaisseur suivant x
+const panelY = F(M.core, M.core, M.board, M.board, M.core, M.core);  // épaisseur suivant y
+
+function box(parent, name, size, pos, mats) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), mats);
+  m.name = name;
+  m.position.set(pos[0], pos[1], pos[2]);
+  parent.add(m);
+  return m;
+}
+
+/* Une partie = un panneau plein (fond ou dessus) + 4 côtés à angles collés.
+   dir = +1 : panneau en bas (le fond), -1 : panneau en haut (la cloche). */
+function part(parent, name, W, H, dir) {
+  const g = new THREE.Group();
+  g.name = name;
+  const yPan = dir > 0 ? tb/2 : H - tb/2;
+  const yWall = dir > 0 ? tb + (H - tb)/2 : (H - tb)/2;
+  box(g, name + '_panneau', [W, tb, W], [0, yPan, 0], panelY);
+  box(g, name + '_cote_avant',  [W, H - tb, tb], [0, yWall,  W/2 - tb/2], wallZ);
+  box(g, name + '_cote_arriere',[W, H - tb, tb], [0, yWall, -W/2 + tb/2], wallZ);
+  box(g, name + '_cote_droit',  [tb, H - tb, W - 2*tb], [ W/2 - tb/2, yWall, 0], wallX);
+  box(g, name + '_cote_gauche', [tb, H - tb, W - 2*tb], [-W/2 + tb/2, yWall, 0], wallX);
+  parent.add(g);
+  return g;
+}
+
+const root = new THREE.Group();
+root.name = 'boite_a_cloche';
+const fond = part(root, 'fond', W1, H1, 1);
+const couvercle = part(root, 'couvercle', W2, H2, -1);
+root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+const slider = document.getElementById('slider');
+const l0 = document.getElementById('l0'), l1 = document.getElementById('l1');
+const play = document.getElementById('play');
+let raf = null;
+
+function setPhase(p) {
+  couvercle.position.y = REVEAL + LIFT * p;
+}
+function apply(p) {
+  setPhase(p);
+  slider.value = p;
+  l0.innerHTML = p < 0.02 ? '<b>Fermée</b>' : 'Fermée';
+  l1.innerHTML = p > 0.98 ? '<b>Ouverte</b>' : 'Ouverte';
+  play.textContent = p > 0.5 ? 'Fermer le couvercle' : 'Ouvrir le couvercle';
+}
+setPhase(1);
+stage.setObject(root);          // cadrage sur la position ouverte : les deux états tiennent dans le champ
+apply(0);
+
+slider.addEventListener('input', () => { cancelAnimationFrame(raf); apply(+slider.value); });
+document.getElementById('play').addEventListener('click', () => {
+  cancelAnimationFrame(raf);
+  const from = +slider.value < 0.5 ? 0 : 1, to = from === 0 ? 1 : 0, t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 1300);
+    const e = k < 0.5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
+    apply(from + (to - from) * e);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+});
+
+const tan = () => Math.tan((stage._camera.fov * Math.PI) / 360);
+function view(dx, dy, dz) {
+  const sph = new THREE.Box3().setFromObject(root).getBoundingSphere(new THREE.Sphere());
+  const dist = (sph.radius / tan()) * 1.28;
+  stage._camera.position.copy(sph.center).add(new THREE.Vector3(dx, dy, dz).normalize().multiplyScalar(dist));
+  stage._controls.target.copy(sph.center);
+  stage._controls.update();
+}
+document.getElementById('v34').addEventListener('click', () => view(1, 0.55, 1.25));
+document.getElementById('vhaut').addEventListener('click', () => view(0.5, 1.5, 0.8));
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>PLV de sol traversante îlot — maquette blanche</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #d6d3cb; }
+  body { font-family: Archivo, system-ui, sans-serif; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .legende {
+    position: fixed; left: 24px; top: 24px; z-index: 5; max-width: min(60vw, 560px);
+    color: #3b3a33; pointer-events: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .legende b { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  .legende span { font-size: 12px; line-height: 1.5; color: #55524a; font-variant-numeric: tabular-nums; text-wrap: pretty; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#b9b5ab"/>
+    <rect x="34" y="22" width="32" height="12" fill="#f4f1e9"/>
+    <rect x="46" y="18" width="8" height="20" fill="#0f8a4f"/>
+    <rect x="34" y="25" width="32" height="5" fill="#0f8a4f"/>
+    <rect x="49" y="34" width="2" height="42" fill="#f4f1e9"/>
+    <g fill="#0f8a4f">
+      <rect x="26" y="42" width="22" height="3"/><rect x="52" y="42" width="22" height="3"/>
+      <rect x="26" y="52" width="22" height="3"/><rect x="52" y="52" width="22" height="3"/>
+      <rect x="26" y="62" width="22" height="3"/><rect x="52" y="62" width="22" height="3"/>
+      <rect x="26" y="72" width="22" height="3"/><rect x="52" y="72" width="22" height="3"/>
+    </g>
+  </svg>
+</template>
+<script type="application/json" id="modele-spec">
+{
+  "ref": "PRE-ILO-PH-8E",
+  "famille": "PLV",
+  "type": "presentoir de sol traversant (ilot)",
+  "secteur": "pharmacie",
+  "version": "maquette blanche",
+  "acces": "recto/verso",
+  "matiere": "carton double cannelure blanc recto/verso",
+  "cannelure": "double",
+  "epaisseur_mm": 5,
+  "hors_tout_mm": { "l": 520, "p": 400, "h": 1820 },
+  "corps_mm": { "l": 400, "p": 400, "h": 1420 },
+  "flanc": { "retour_tranche_mm": 15, "faces": 2, "commentaire": "retour replie sur chaque tranche verticale" },
+  "socle_mm": { "l": 400, "p": 400, "h": 140 },
+  "fronton_mm": { "l": 520, "h": 395, "decoupe": "arche", "faces": 2, "construction": "double epaisseur collee dos a dos" },
+  "chargement": { "niveaux": 4, "faces": 2, "etageres": 8,
+                  "inclinaison_deg": 5, "arretoir_mm": 48,
+                  "plateau_mm": { "l": 390, "p": 180 } },
+  "impression": { "couleurs": 0, "faces": "aucune" },
+  "convention_pieces": "car_ = carton (surface facturable) | imp_ = zone imprimee | prd_ = produit factice, hors devis"
+}
+</script>
+<three-d-stage name="plv-sol-traversante-ilot-maquette-blanche" background="#d6d3cb" autorotate></three-d-stage>
+<div class="legende">
+  <b>Maquette blanche — PLV de sol traversante îlot 4 étages, accès recto/verso</b>
+  <span>corps 40 × 40 cm · fronton 52 cm double face · H 182 cm · 8 plateaux (4 niveaux × 2 faces) inclinés 5° · cloison centrale porteuse · fronton double épaisseur · carton blanc double cannelure 5 mm · flancs à retour replié 15 mm sur les tranches, sans impression</span>
+</div>
+<script src="./three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const { THREE } = await stage.ready;
+
+const T = 0.005;          // épaisseur double cannelure
+const W = 0.40;           // largeur hors tout du corps
+const DZ = 0.20;          // demi-profondeur (recto +Z / verso -Z)
+const SOCLE_H = 0.14;     // hauteur du socle
+const TOP_Y = 1.42;       // haut du corps
+const LEVELS = [0.14, 0.46, 0.78, 1.10];
+const PLAT_D = 0.18;      // profondeur d'un plateau
+const PLAT_Z = T / 2 + PLAT_D / 2;
+
+const carton = new THREE.MeshStandardMaterial({ name: 'carton_blanc_maquette', color: 0xf1f0ec, roughness: 0.88, metalness: 0 });
+const mat = { kraft: carton, tranche: carton, blanc: carton, vert: carton };
+
+const plv = new THREE.Group();
+plv.name = 'presentoir_sol_traversante_ilot_maquette_blanche';
+
+function mesh(name, geo, material, pos, rot) {
+  const m = new THREE.Mesh(geo, material);
+  m.name = name;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]);
+  if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return m;
+}
+const box = (x, y, z) => new THREE.BoxGeometry(x, y, z);
+const extrude = (shape, depth) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 40 });
+
+/* ---------- socle traversant, imprimé sur les deux faces ---------- */
+plv.add(mesh('car_socle_caisse', box(W, SOCLE_H, 2 * DZ), mat.kraft, [0, SOCLE_H / 2, 0]));
+[['recto', 1], ['verso', -1]].forEach(([face, s]) => {
+  plv.add(mesh('imp_socle_face_' + face, box(W, SOCLE_H, 0.0015), mat.blanc, [0, SOCLE_H / 2, s * (DZ + 0.0008)]));
+  plv.add(mesh('imp_socle_bandeau_' + face, box(W, 0.036, 0.0015), mat.vert, [0, 0.018, s * (DZ + 0.0018)]));
+});
+
+/* ---------- flancs découpés, silhouette symétrique ---------- */
+const flanc = new THREE.Shape();
+flanc.moveTo(-DZ, 0);
+flanc.lineTo(DZ, 0);
+flanc.lineTo(DZ, 1.18);
+flanc.quadraticCurveTo(DZ, 1.28, DZ - 0.06, 1.28);
+flanc.lineTo(-(DZ - 0.06), 1.28);
+flanc.quadraticCurveTo(-DZ, 1.28, -DZ, 1.18);
+flanc.closePath();
+const flancGeo = extrude(flanc, T);
+plv.add(mesh('car_flanc_droit', flancGeo, mat.kraft, [W / 2, SOCLE_H, 0], [0, -Math.PI / 2, 0]));
+plv.add(mesh('car_flanc_gauche', flancGeo, mat.kraft, [-W / 2 + T, SOCLE_H, 0], [0, -Math.PI / 2, 0]));
+/* retour replié 15 mm sur chaque tranche verticale */
+[['droit', 1], ['gauche', -1]].forEach(([cote, sx]) => {
+  [['recto', 1], ['verso', -1]].forEach(([face, s]) => {
+    plv.add(mesh('car_flanc_' + cote + '_retour_' + face, box(0.015, 1.18, T), mat.blanc,
+      [sx * (W / 2 - 0.0075), SOCLE_H + 0.59, s * (DZ - T / 2)]));
+  });
+});
+
+/* ---------- cloison centrale porteuse (remplace le dos) + traverse haute ---------- */
+plv.add(mesh('car_cloison_centrale', box(W - 2 * T, TOP_Y - SOCLE_H, T), mat.tranche, [0, (TOP_Y + SOCLE_H) / 2, 0]));
+plv.add(mesh('car_traverse_haute', box(W - 2 * T, T, 2 * (DZ - 0.06)), mat.kraft, [0, TOP_Y - T / 2, 0]));
+
+/* ---------- 8 plateaux : 4 niveaux × 2 faces, inclinés 5° vers l'extérieur ---------- */
+LEVELS.forEach((y, i) => {
+  const n = i + 1;
+  [['recto', 1], ['verso', -1]].forEach(([face, s]) => {
+    const g = new THREE.Group();
+    g.name = 'car_etagere_' + n + '_' + face;
+    g.position.set(0, y, 0);
+    g.rotation.x = s * 0.087;
+    const zc = s * PLAT_Z;
+    const zb = s * (PLAT_Z + PLAT_D / 2 + T / 2);
+    g.add(mesh('car_etagere_' + n + '_plateau_' + face, box(W - 2 * T, T, PLAT_D), mat.tranche, [0, T / 2, zc]));
+    g.add(mesh('car_etagere_' + n + '_arretoir_' + face, box(W - 2 * T, 0.048, T), mat.blanc, [0, 0.024 + T, zb]));
+    g.add(mesh('imp_etagere_' + n + '_lisere_' + face, box(W - 2 * T, 0.012, 0.0012), mat.vert, [0, 0.042 + T, s * (PLAT_Z + PLAT_D / 2 + T + 0.0006)]));
+    plv.add(g);
+  });
+});
+
+/* ---------- fronton double face, dans l'axe de la cloison ---------- */
+const F_HW = 0.26;
+const arche = new THREE.Shape();
+arche.moveTo(-F_HW, 0);
+arche.lineTo(F_HW, 0);
+arche.lineTo(F_HW, 0.21);
+arche.quadraticCurveTo(F_HW, 0.31, F_HW - 0.065, 0.345);
+arche.quadraticCurveTo(0, 0.445, -(F_HW - 0.065), 0.345);
+arche.quadraticCurveTo(-F_HW, 0.31, -F_HW, 0.21);
+arche.closePath();
+
+const a = 0.024, b = 0.066;
+const croix = new THREE.Shape();
+croix.moveTo(-a, -b);
+croix.lineTo(a, -b); croix.lineTo(a, -a); croix.lineTo(b, -a);
+croix.lineTo(b, a);  croix.lineTo(a, a);  croix.lineTo(a, b);
+croix.lineTo(-a, b); croix.lineTo(-a, a); croix.lineTo(-b, a);
+croix.lineTo(-b, -a); croix.lineTo(-a, -a);
+croix.closePath();
+
+const fronton = new THREE.Group();
+fronton.name = 'car_fronton';
+fronton.position.set(0, 1.425, 0);
+fronton.add(mesh('car_fronton_panneau_recto', extrude(arche, T), mat.blanc, [0, 0, 0]));
+fronton.add(mesh('car_fronton_panneau_verso', extrude(arche, T), mat.blanc, [0, 0, -T]));
+[['recto', T + 0.0008, T], ['verso', -T - 0.0008, -T - 0.0015]].forEach(([face, zb, zc]) => {
+  fronton.add(mesh('imp_fronton_bandeau_' + face, box(2 * F_HW - 0.004, 0.058, 0.0015), mat.vert, [0, 0.072, zb]));
+  fronton.add(mesh('imp_fronton_croix_' + face, extrude(croix, 0.0015), mat.vert, [0, 0.235, zc]));
+});
+
+/* languette de pliage collée sur la traverse haute */
+fronton.add(mesh('car_fronton_languette', box(0.30, T, 0.16), mat.kraft, [0, -T / 2, -T / 2]));
+plv.add(fronton);
+
+stage.setObject(plv);
+</script>
+<script id="__embed_fit__">if(window.self!==window.top){document.documentElement.classList.add('embedded');}</script><style>.embedded .legende{display:none!important}.embedded #panel h1{display:none!important}.embedded #panel #note{display:none!important}.embedded #panel{display:none!important}.embedded three-d-stage{--toolbar-scale:.8}</style><script id="__embed_bg__">(function(){var bg=new URLSearchParams(location.search).get('bg');if(!bg)return;bg='#'+bg;document.documentElement.style.background=bg;document.body.style.background=bg;var apply=function(){var s=document.querySelector('three-d-stage');if(s){s.setAttribute('background',bg);s.style.setProperty('--stage-bg',bg);}};apply();window.addEventListener('DOMContentLoaded',apply);var ui=document.createElement('style');ui.textContent='#panel,#variants button,#toggle{background:transparent!important;color:#B4C5DC!important;border-color:#2A3D5C!important}#variants button[aria-pressed=true]{background:#5B8DD6!important;border-color:#5B8DD6!important;color:#0B1526!important}#note,#dims{color:#7E93B0!important}body{color:#B4C5DC}';document.head.appendChild(ui);})();</script></body>
+</html>
