@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platine DJ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">PLATINE<span>DJ</span></div>
+    <div class="status" id="status">Glissez vos morceaux ou un dossier dans la bibliothèque pour commencer.</div>
+    <div class="top-right">
+      <span class="rec-time" id="rec-time"></span>
+      <button id="btn-rec" class="btn rec" title="Enregistrer le mix">● REC</button>
+      <button id="btn-help" class="btn" title="Raccourcis clavier">?</button>
+    </div>
+  </header>
+
+  <section class="waves">
+    <canvas class="zoom" id="zoomA" data-deck="A"></canvas>
+    <canvas class="zoom" id="zoomB" data-deck="B"></canvas>
+    <div class="zoom-ctl">
+      <button class="btn mini" data-zoom="-1" title="Zoom avant">+</button>
+      <button class="btn mini" data-zoom="1" title="Zoom arrière">−</button>
+    </div>
+  </section>
+
+  <section class="console">
+    <div class="deck" id="deckA" data-deck="A"></div>
+    <div class="mixer" id="mixer">
+      <div class="ch" data-ch="A"></div>
+      <div class="master-col">
+        <div class="knob-slot" data-knob="master"></div>
+        <div class="meter master"><i></i></div>
+        <label class="tiny">MASTER</label>
+      </div>
+      <div class="ch" data-ch="B"></div>
+      <div class="xfader-row">
+        <span class="xf-label">A</span>
+        <input type="range" id="xfader" min="0" max="1" step="0.001" value="0.5" title="Crossfader (double-clic : centre)">
+        <span class="xf-label">B</span>
+        <select id="xcurve" title="Courbe du crossfader">
+          <option value="smooth">Doux</option>
+          <option value="dj">Mix</option>
+          <option value="cut">Cut</option>
+        </select>
+      </div>
+    </div>
+    <div class="deck" id="deckB" data-deck="B"></div>
+  </section>
+
+  <section class="library" id="library">
+    <aside class="side">
+      <div class="side-actions">
+        <label class="btn">Importer des fichiers<input type="file" id="in-files" multiple accept="audio/*,.mp3,.wav,.aiff,.aif,.flac,.m4a,.aac,.ogg,.opus" hidden></label>
+        <label class="btn">Importer un dossier<input type="file" id="in-folder" webkitdirectory multiple hidden></label>
+      </div>
+      <ul class="tree" id="tree"></ul>
+    </aside>
+    <div class="lib-main">
+      <div class="lib-toolbar">
+        <input type="search" id="search" placeholder="Rechercher titre, artiste, BPM, tonalité…">
+        <select id="compat" title="Filtre de mix harmonique">
+          <option value="">Tous les morceaux</option>
+          <option value="A">Compatibles avec le deck A</option>
+          <option value="B">Compatibles avec le deck B</option>
+        </select>
+        <select id="add-to" title="Ajouter la sélection à une playlist"><option value="">Ajouter à…</option></select>
+        <button class="btn" id="btn-export" title="Exporter la liste affichée">Exporter la tracklist</button>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="tracks">
+          <thead>
+            <tr>
+              <th class="c-load"></th>
+              <th data-sort="order" class="c-num">#</th>
+              <th data-sort="title">Titre</th>
+              <th data-sort="artist">Artiste</th>
+              <th data-sort="bpm" class="c-num">BPM</th>
+              <th data-sort="camelot" class="c-key">Tonalité</th>
+              <th data-sort="duration" class="c-num">Durée</th>
+              <th data-sort="genre">Genre</th>
+              <th data-sort="addedAt" class="c-date">Ajouté</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty">
+          <strong>Bibliothèque vide</strong>
+          Glissez-déposez des fichiers audio ou un dossier ici (MP3, WAV, AIFF, FLAC, M4A, OGG).<br>
+          Chaque morceau est analysé : BPM, grille rythmique, tonalité, waveform.
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="drop-hint" id="drop-hint">Déposez pour importer</div>
+
+<dialog id="help">
+  <h2>Raccourcis clavier</h2>
+  <div class="help-grid">
+    <div>
+      <h3>Deck A</h3>
+      <p><kbd>Q</kbd> Play/Pause · <kbd>A</kbd> Cue (maintenir)</p>
+      <p><kbd>1</kbd>–<kbd>4</kbd> Hot cues A–D · <kbd>W</kbd> Sync</p>
+      <p><kbd>E</kbd> Boucle auto · <kbd>Z</kbd>/<kbd>X</kbd> Nudge −/+</p>
+    </div>
+    <div>
+      <h3>Deck B</h3>
+      <p><kbd>P</kbd> Play/Pause · <kbd>L</kbd> Cue (maintenir)</p>
+      <p><kbd>7</kbd>–<kbd>0</kbd> Hot cues A–D · <kbd>O</kbd> Sync</p>
+      <p><kbd>I</kbd> Boucle auto · <kbd>,</kbd>/<kbd>.</kbd> Nudge −/+</p>
+    </div>
+  </div>
+  <p><kbd>←</kbd>/<kbd>→</kbd> Crossfader · <kbd>Maj</kbd>+clic sur un hot cue : l'effacer · Double-clic sur un bouton rotatif / fader : remise à zéro</p>
+  <p>Bibliothèque : double-clic = charger sur le deck libre · glisser une ligne sur un deck ou une playlist · <kbd>Suppr</kbd> retire la sélection · double-clic sur un BPM pour le corriger.</p>
+  <p class="muted">Tout reste dans votre navigateur (IndexedDB) : aucun fichier n'est envoyé sur Internet.</p>
+  <form method="dialog"><button class="btn">Fermer</button></form>
+</dialog>
+
+<template id="deck-tpl">
+  <div class="deck-head">
+    <div class="deck-letter"></div>
+    <div class="deck-meta">
+      <div class="d-title">Aucun morceau</div>
+      <div class="d-artist">Glissez un morceau depuis la bibliothèque</div>
+    </div>
+    <div class="deck-bpm">
+      <div class="d-bpm">—</div>
+      <div class="d-pitch">0.00%</div>
+    </div>
+  </div>
+  <div class="deck-info">
+    <span class="d-key"></span>
+    <span class="d-beat"><i></i><i></i><i></i><i></i></span>
+    <span class="d-time">0:00.0</span>
+    <span class="d-remain">-0:00.0</span>
+  </div>
+  <canvas class="overview"></canvas>
+  <div class="deck-body">
+    <div class="deck-controls">
+      <div class="hotcues"></div>
+      <div class="row loops">
+        <button class="btn" data-act="loop-half" title="Diviser la boucle">½</button>
+        <button class="btn loop-auto" data-act="loop-auto" title="Boucle automatique">4</button>
+        <button class="btn" data-act="loop-double" title="Doubler la boucle">×2</button>
+        <button class="btn" data-act="loop-in">IN</button>
+        <button class="btn" data-act="loop-out">OUT</button>
+        <button class="btn loop-exit" data-act="loop-exit">EXIT</button>
+      </div>
+      <div class="row grid-tools">
+        <button class="btn sm" data-act="bpm-half" title="BPM divisé par 2">BPM ½</button>
+        <button class="btn sm" data-act="bpm-double" title="BPM multiplié par 2">BPM ×2</button>
+        <button class="btn sm" data-act="grid-left" title="Décaler la grille vers la gauche (5 ms)">◀ grille</button>
+        <button class="btn sm" data-act="grid-right" title="Décaler la grille vers la droite (5 ms)">grille ▶</button>
+        <button class="btn sm" data-act="grid-here" title="Placer le premier temps de mesure ici">1 ici</button>
+      </div>
+      <div class="row transport">
+        <button class="btn cue" data-act="cue">CUE</button>
+        <button class="btn play" data-act="play">▶ ❚❚</button>
+        <div class="toggles">
+          <button class="btn sync" data-act="sync" title="Caler tempo + phase sur l'autre deck (verrouillé)">SYNC</button>
+          <button class="btn on" data-act="quant" title="Quantize : cues et boucles calés sur la grille">Q</button>
+          <button class="btn on" data-act="keylock" title="Master tempo : la tonalité ne change pas avec le tempo">KEY</button>
+        </div>
+      </div>
+    </div>
+    <div class="tempo">
+      <button class="btn sm" data-act="range" title="Plage du tempo">±8%</button>
+      <span class="tiny">−</span>
+      <input type="range" class="tempo-slider" min="-1" max="1" step="0.0005" value="0" title="Tempo (double-clic : 0)">
+      <span class="tiny">+</span>
+      <div class="nudge">
+        <button class="btn sm" data-act="nudge-down" title="Ralentir (maintenir)">◀◀</button>
+        <button class="btn sm" data-act="nudge-up" title="Accélérer (maintenir)">▶▶</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script src="js/db.js"></script>
+<script src="js/tags.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/waveform.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
